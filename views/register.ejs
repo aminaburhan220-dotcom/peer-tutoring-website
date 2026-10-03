@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('partials/head', { pageTitle: 'Register' }) %></head>
+<body>
+<%- include('partials/toasts') %>
+<%- include('partials/navbar', { active: 'register' }) %>
+
+<div class="auth-shell">
+  <div class="auth-card" style="max-width:480px;">
+    <h1>Create your account</h1>
+    <p class="lead">Join PeerTutor as a learner, a peer tutor, or both.</p>
+
+    <form method="POST" action="/register" data-validate>
+      <div class="role-select">
+        <label class="role-option <%= preselectRole === 'student' ? 'active' : '' %>">
+          <input type="radio" name="role" value="student" <%= preselectRole === 'student' ? 'checked' : '' %>>
+          <i class="fa-solid fa-user-graduate" style="display:block; margin-bottom:6px;"></i> I'm here to learn
+        </label>
+        <label class="role-option <%= preselectRole === 'tutor' ? 'active' : '' %>">
+          <input type="radio" name="role" value="tutor" <%= preselectRole === 'tutor' ? 'checked' : '' %>>
+          <i class="fa-solid fa-chalkboard-user" style="display:block; margin-bottom:6px;"></i> I'm here to teach
+        </label>
+      </div>
+      <p class="field-hint" style="margin-top:-10px; margin-bottom:20px;">You can add the other role to this same account later from your dashboard — most students end up doing both.</p>
+
+      <div class="form-group">
+        <label>Gender</label>
+        <div class="role-select gender-select">
+          <label class="role-option gender-option active">
+            <input type="radio" name="gender" value="female" checked>
+            <i class="fa-solid fa-venus" style="display:block; margin-bottom:6px;"></i> Female
+          </label>
+          <label class="role-option gender-option">
+            <input type="radio" name="gender" value="male">
+            <i class="fa-solid fa-mars" style="display:block; margin-bottom:6px;"></i> Male
+          </label>
+        </div>
+        <div class="field-hint">Used to set your default profile avatar — you can upload your own photo anytime from your profile page.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="full_name">Full Name</label>
+        <input class="form-control" type="text" id="full_name" name="full_name" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input class="form-control" type="email" id="email" name="email" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="password-field">
+          <input class="form-control" type="password" id="password" name="password" minlength="6" required>
+          <button type="button" class="password-toggle" data-target="password">Show</button>
+        </div>
+        <div class="field-hint">At least 6 characters.</div>
+      </div>
+      <div class="form-group">
+        <label for="confirm_password">Confirm Password</label>
+        <div class="password-field">
+          <input class="form-control" type="password" id="confirm_password" name="confirm_password" minlength="6" required>
+          <button type="button" class="password-toggle" data-target="confirm_password">Show</button>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+    </form>
+
+    <p class="auth-switch">Already have an account? <a href="/login">Log in</a></p>
+  </div>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

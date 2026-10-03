@@ -1,0 +1,38 @@
+<header class="navbar">
+  <div class="container">
+    <a href="/" class="brand">
+      <span class="brand-mark"><i class="fa-solid fa-graduation-cap"></i></span>
+      PeerTutor
+    </a>
+
+    <nav class="nav-links" id="navLinks">
+      <a href="/" class="<%= typeof active !== 'undefined' && active === 'home' ? 'active' : '' %>">Home</a>
+      <a href="/about" class="<%= typeof active !== 'undefined' && active === 'about' ? 'active' : '' %>">About Us</a>
+      <a href="/how-it-works" class="<%= typeof active !== 'undefined' && active === 'how' ? 'active' : '' %>">How It Works</a>
+      <a href="/subjects" class="<%= typeof active !== 'undefined' && active === 'subjects' ? 'active' : '' %>">Subjects</a>
+      <a href="/find-tutors" class="<%= typeof active !== 'undefined' && active === 'find' ? 'active' : '' %>">Find Peer Tutors</a>
+      <a href="/contact" class="<%= typeof active !== 'undefined' && active === 'contact' ? 'active' : '' %>">Contact</a>
+      <a href="/faq" class="<%= typeof active !== 'undefined' && active === 'faq' ? 'active' : '' %>">FAQ</a>
+    </nav>
+
+    <div class="nav-actions">
+      <% if (currentUser) { %>
+        <% if (currentUser.role !== 'admin' && currentUser.hasStudentProfile && currentUser.hasTutorProfile) { %>
+          <div class="dash-switch">
+            <a href="/student/dashboard" class="btn btn-ghost btn-sm">Learner</a>
+            <a href="/tutor/dashboard" class="btn btn-ghost btn-sm">Peer Tutor</a>
+          </div>
+        <% } else { %>
+          <a href="/<%= currentUser.role %>/dashboard" class="user-chip">
+            <img src="<%= currentUser.avatar || '/images/default-avatar.svg' %>" alt="<%= currentUser.full_name %>">
+            <span><%= currentUser.full_name.split(' ')[0] %></span>
+          </a>
+        <% } %>
+      <% } else { %>
+        <a href="/login" class="btn btn-ghost">Log In</a>
+        <a href="/register" class="btn btn-primary">Sign Up</a>
+      <% } %>
+      <button class="nav-toggle" aria-label="Toggle menu"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </div>
+</header>

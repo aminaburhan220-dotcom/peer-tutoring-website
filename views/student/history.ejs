@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head', { pageTitle: 'Session History' }) %></head>
+<body>
+<%- include('../partials/toasts') %>
+<%- include('../partials/navbar', {}) %>
+
+<div class="dash-shell">
+  <%- include('../partials/student-sidebar', { active: 'history' }) %>
+
+  <main class="dash-main">
+    <%- include('../partials/dash-toggle') %>
+    <div class="dash-header"><div><h1>Session History</h1><p>Your completed tutoring sessions.</p></div></div>
+
+    <div class="panel">
+      <% if (history.length === 0) { %>
+        <div class="empty-state"><i class="fa-solid fa-clock-rotate-left"></i><p>No completed sessions yet.</p></div>
+      <% } else { %>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Tutor</th><th>Subject</th><th>Date</th><th>Time</th><th></th></tr></thead>
+            <tbody>
+              <% history.forEach(function(b) { %>
+                <tr>
+                  <td><%= b.tutor_name %></td>
+                  <td><%= b.subject_name %></td>
+                  <td><%= b.session_date %></td>
+                  <td><%= b.start_time %>–<%= b.end_time %></td>
+                  <td><% if (!b.reviewed) { %><a href="/student/reviews" class="btn btn-outline btn-sm">Leave Review</a><% } else { %><span class="badge badge-completed">Reviewed</span><% } %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+  </main>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

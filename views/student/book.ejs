@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head', { pageTitle: 'Book a Session' }) %></head>
+<body>
+<%- include('../partials/toasts') %>
+<%- include('../partials/navbar', {}) %>
+
+<div class="dash-shell">
+  <%- include('../partials/student-sidebar', { active: 'bookings' }) %>
+
+  <main class="dash-main">
+    <%- include('../partials/dash-toggle') %>
+    <div class="dash-header"><div><h1>Book a Session with <%= tutor.full_name %></h1><p>Fill in the details below to send a booking request.</p></div></div>
+
+    <div class="panel" style="max-width:600px;">
+      <form method="POST" action="/student/book/<%= tutor.id %>" data-validate>
+        <div class="form-group">
+          <label for="subject_id">Subject</label>
+          <select class="form-control" id="subject_id" name="subject_id" required>
+            <option value="">Select a subject</option>
+            <% subjects.forEach(function(s) { %>
+              <option value="<%= s.id %>"><%= s.name %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="session_date">Date</label>
+            <input class="form-control" type="date" id="session_date" name="session_date" required>
+          </div>
+          <div class="form-group">
+            <label for="session_type">Session Type</label>
+            <select class="form-control" id="session_type" name="session_type">
+              <option value="online">Online</option>
+              <option value="in-person">In-Person</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="start_time">Start Time</label>
+            <input class="form-control" type="time" id="start_time" name="start_time" required>
+          </div>
+          <div class="form-group">
+            <label for="end_time">End Time</label>
+            <input class="form-control" type="time" id="end_time" name="end_time" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="message">Message to Tutor (optional)</label>
+          <textarea class="form-control" id="message" name="message" placeholder="What would you like to focus on?"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Send Booking Request</button>
+      </form>
+    </div>
+  </main>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<aside class="dash-sidebar" id="dashSidebar">
+  <div class="side-user">
+    <img src="<%= currentUser.avatar || '/images/default-avatar.svg' %>" alt="">
+    <div>
+      <strong><%= currentUser.full_name %></strong>
+      <span>Learner</span>
+    </div>
+  </div>
+  <% if (currentUser.hasTutorProfile) { %>
+    <a href="/tutor/dashboard" class="side-link" style="background:var(--secondary-light); color:#8A6314; margin-bottom:12px;"><i class="fa-solid fa-arrow-right-arrow-left"></i> Switch to Peer Tutor Dashboard</a>
+  <% } %>
+  <a href="/student/dashboard" class="side-link <%= active === 'dashboard' ? 'active' : '' %>"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+  <a href="/student/profile" class="side-link <%= active === 'profile' ? 'active' : '' %>"><i class="fa-solid fa-user"></i> My Profile</a>
+  <a href="/find-tutors" class="side-link <%= active === 'find' ? 'active' : '' %>"><i class="fa-solid fa-magnifying-glass"></i> Find Peer Tutors</a>
+  <a href="/student/bookings" class="side-link <%= active === 'bookings' ? 'active' : '' %>"><i class="fa-solid fa-calendar-check"></i> My Bookings</a>
+  <a href="/student/messages" class="side-link <%= active === 'messages' ? 'active' : '' %>"><i class="fa-solid fa-comments"></i> Messages</a>
+  <a href="/student/notifications" class="side-link <%= active === 'notifications' ? 'active' : '' %>"><i class="fa-solid fa-bell"></i> Notifications</a>
+  <a href="/student/history" class="side-link <%= active === 'history' ? 'active' : '' %>"><i class="fa-solid fa-clock-rotate-left"></i> Session History</a>
+  <a href="/student/favorites" class="side-link <%= active === 'favorites' ? 'active' : '' %>"><i class="fa-solid fa-heart"></i> Favorites</a>
+  <a href="/student/reviews" class="side-link <%= active === 'reviews' ? 'active' : '' %>"><i class="fa-solid fa-star"></i> Reviews</a>
+  <a href="/student/settings" class="side-link <%= active === 'settings' ? 'active' : '' %>"><i class="fa-solid fa-gear"></i> Settings</a>
+  <% if (!currentUser.hasTutorProfile) { %>
+    <form action="/student/become-tutor" method="POST" style="margin-top:12px;">
+      <button type="submit" class="side-link" style="width:100%; background:var(--gradient); color:#fff; border:none; text-align:left; font:inherit; cursor:pointer;"><i class="fa-solid fa-chalkboard-user"></i> Become a Peer Tutor</button>
+    </form>
+  <% } %>
+  <form action="/logout" method="POST">
+    <button type="submit" class="side-link logout-link" style="width:100%; background:none; border:none; text-align:left; font: inherit; cursor:pointer;"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+  </form>
+</aside>

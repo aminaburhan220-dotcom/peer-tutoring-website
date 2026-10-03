@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head', { pageTitle: 'Admin Dashboard' }) %></head>
+<body>
+<%- include('../partials/toasts') %>
+<%- include('../partials/navbar', {}) %>
+
+<div class="dash-shell">
+  <%- include('../partials/admin-sidebar', { active: 'dashboard' }) %>
+
+  <main class="dash-main">
+    <%- include('../partials/dash-toggle') %>
+    <div class="dash-header"><div><h1>Admin Dashboard</h1><p>Platform-wide overview.</p></div></div>
+
+    <div class="grid grid-4" style="margin-bottom:24px;">
+      <div class="card stat-card"><div class="icon"><i class="fa-solid fa-user-graduate"></i></div><div><div class="num"><%= stats.totalStudents %></div><div class="label">Total Students</div></div></div>
+      <div class="card stat-card"><div class="icon"><i class="fa-solid fa-chalkboard-user"></i></div><div><div class="num"><%= stats.totalTutors %></div><div class="label">Total Peer Tutors</div></div></div>
+      <div class="card stat-card"><div class="icon"><i class="fa-solid fa-hourglass-half"></i></div><div><div class="num"><%= stats.pendingTutors %></div><div class="label">Pending Peer Tutors</div></div></div>
+      <div class="card stat-card"><div class="icon"><i class="fa-solid fa-book"></i></div><div><div class="num"><%= stats.totalSubjects %></div><div class="label">Total Subjects</div></div></div>
+    </div>
+    <div class="grid grid-4" style="margin-bottom:28px;">
+      <div class="card stat-card"><div class="icon"><i class="fa-solid fa-calendar-check"></i></div><div><div class="num"><%= stats.totalBookings %></div><div class="label">Total Bookings</div></div></div>
+      <div class="card stat-card"><div class="icon"><i class="fa-solid fa-clock"></i></div><div><div class="num"><%= stats.pendingBookings %></div><div class="label">Pending Bookings</div></div></div>
+      <div class="card stat-card"><div class="icon"><i class="fa-solid fa-circle-check"></i></div><div><div class="num"><%= stats.completedSessions %></div><div class="label">Completed Sessions</div></div></div>
+      <div class="card stat-card"><div class="icon"><i class="fa-solid fa-star"></i></div><div><div class="num"><%= stats.totalReviews %></div><div class="label">Total Reviews</div></div></div>
+    </div>
+
+    <div class="grid grid-2" style="margin-bottom:28px;">
+      <div class="card stat-card" style="padding:26px;">
+        <div class="icon" style="width:56px; height:56px; font-size:1.4rem;"><i class="fa-solid fa-sack-dollar"></i></div>
+        <div><div class="num" style="font-size:1.9rem;">$<%= stats.totalRevenue.toFixed(2) %></div><div class="label">Total Revenue (est.)</div></div>
+      </div>
+      <div class="card stat-card" style="padding:26px;">
+        <div class="icon" style="width:56px; height:56px; font-size:1.4rem;"><i class="fa-solid fa-list-check"></i></div>
+        <div><div class="num" style="font-size:1.9rem;"><%= recentActivity.length %></div><div class="label">Recent Events — <a href="/admin/activity-logs" style="color:var(--primary-dark); font-weight:700;">View all</a></div></div>
+      </div>
+    </div>
+
+    <div class="grid grid-2" style="align-items:start;">
+      <div class="panel">
+        <div class="panel-head"><h2>Bookings by Subject</h2></div>
+        <canvas data-chart='<%- JSON.stringify(bySubject.map(function(b){return {label:b.name, value:b.count}})) %>' style="width:100%; height:220px;"></canvas>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>Bookings by Status</h2></div>
+        <canvas data-chart='<%- JSON.stringify(byStatus.map(function(b){return {label:b.status, value:b.count}})) %>' style="width:100%; height:220px;"></canvas>
+      </div>
+    </div>
+
+    <div class="grid grid-2" style="align-items:start;">
+      <div class="panel">
+        <div class="panel-head"><h2>Recent Bookings</h2><a href="/admin/bookings" class="btn btn-ghost btn-sm">View all</a></div>
+        <% if (recentBookings.length === 0) { %>
+          <div class="empty-state"><i class="fa-solid fa-calendar-check"></i><p>No bookings yet.</p></div>
+        <% } else { %>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Student</th><th>Tutor</th><th>Subject</th><th>Status</th></tr></thead>
+              <tbody>
+                <% recentBookings.forEach(function(b) { %>
+                  <tr>
+                    <td><%= b.student_name %></td>
+                    <td><%= b.tutor_name %></td>
+                    <td><%= b.subject_name %></td>
+                    <td><span class="badge badge-<%= b.status %>"><%= b.status %></span></td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>Recent Activity</h2><a href="/admin/activity-logs" class="btn btn-ghost btn-sm">View all</a></div>
+        <% if (recentActivity.length === 0) { %>
+          <div class="empty-state"><i class="fa-solid fa-list-check"></i><p>No activity recorded yet.</p></div>
+        <% } else { %>
+          <% recentActivity.forEach(function(a) { %>
+            <div style="padding:12px 0; border-bottom:1px solid var(--line);">
+              <p style="margin:0; font-size:.9rem;"><%= a.description %></p>
+              <span style="font-size:.76rem; color:var(--ink-faint);"><%= new Date(a.created_at).toLocaleString() %></span>
+            </div>
+          <% }) %>
+        <% } %>
+      </div>
+    </div>
+
+    <% if (stats.pendingTutors > 0) { %>
+      <div class="panel" style="border-left:4px solid var(--warning);">
+        <p style="margin:0;"><strong><%= stats.pendingTutors %> tutor<%= stats.pendingTutors === 1 ? '' : 's' %></strong> awaiting approval. <a href="/admin/tutors?status=pending" style="color:var(--primary-dark); font-weight:700;">Review now &rarr;</a></p>
+      </div>
+    <% } %>
+  </main>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

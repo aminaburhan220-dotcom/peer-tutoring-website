@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head', { pageTitle: 'Messages' }) %></head>
+<body>
+<%- include('../partials/toasts') %>
+<%- include('../partials/navbar', {}) %>
+
+<div class="dash-shell">
+  <%- include('../partials/student-sidebar', { active: 'messages' }) %>
+
+  <main class="dash-main">
+    <%- include('../partials/dash-toggle') %>
+    <div class="dash-header"><div><h1>Messages</h1><p>Conversations with your tutors.</p></div></div>
+
+    <div class="chat-shell">
+      <div class="chat-list">
+        <% if (conversations.length === 0) { %>
+          <div class="empty-state"><i class="fa-solid fa-comments"></i><p>No conversations yet. Message a tutor from their profile page.</p></div>
+        <% } %>
+        <% conversations.forEach(function(c) { %>
+          <a href="/student/messages/<%= c.user_id %>" class="chat-list-item <%= activeConversation && activeConversation.id == c.user_id ? 'active' : '' %>">
+            <img src="<%= c.avatar || '/images/default-avatar.svg' %>" alt="">
+            <div>
+              <div class="name"><%= c.full_name %></div>
+              <div class="snippet"><%= c.last_message || '' %></div>
+            </div>
+            <% if (c.unread > 0) { %><span class="unread-dot"></span><% } %>
+          </a>
+        <% }) %>
+      </div>
+
+      <% if (activeConversation) { %>
+        <div class="chat-window">
+          <div class="chat-header">
+            <img src="<%= activeConversation.avatar || '/images/default-avatar.svg' %>" alt="">
+            <%= activeConversation.full_name %>
+          </div>
+          <div class="chat-body">
+            <% if (thread.length === 0) { %>
+              <p style="color:var(--ink-faint); text-align:center;">Say hello 👋</p>
+            <% } %>
+            <% thread.forEach(function(m) { %>
+              <div class="bubble <%= m.sender_id == currentUser.id ? 'mine' : 'theirs' %>">
+                <%= m.content %>
+                <span class="time"><%= new Date(m.created_at).toLocaleString() %></span>
+              </div>
+            <% }) %>
+          </div>
+          <form method="POST" action="/student/messages/<%= activeConversation.id %>" class="chat-input" data-no-loading>
+            <input class="form-control" type="text" name="content" placeholder="Type a message..." required autocomplete="off">
+            <button type="submit" class="btn btn-primary btn-sm">Send</button>
+          </form>
+        </div>
+      <% } else { %>
+        <div class="chat-empty">
+          <i class="fa-solid fa-comments" style="font-size:2.4rem;"></i>
+          <p>Select a conversation to start chatting.</p>
+        </div>
+      <% } %>
+    </div>
+  </main>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

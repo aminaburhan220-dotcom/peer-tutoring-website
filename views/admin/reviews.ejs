@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head', { pageTitle: 'Manage Reviews' }) %></head>
+<body>
+<%- include('../partials/toasts') %>
+<%- include('../partials/navbar', {}) %>
+
+<div class="dash-shell">
+  <%- include('../partials/admin-sidebar', { active: 'reviews' }) %>
+
+  <main class="dash-main">
+    <%- include('../partials/dash-toggle') %>
+    <div class="dash-header"><div><h1>Manage Reviews</h1><p><%= reviews.length %> review<%= reviews.length===1?'':'s' %> total.</p></div></div>
+
+    <div class="panel">
+      <% if (reviews.length === 0) { %>
+        <div class="empty-state"><i class="fa-solid fa-star"></i><p>No reviews yet.</p></div>
+      <% } else { %>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Student</th><th>Tutor</th><th>Rating</th><th>Comment</th><th>Date</th><th></th></tr></thead>
+            <tbody>
+              <% reviews.forEach(function(r) { %>
+                <tr>
+                  <td><%= r.student_name %></td>
+                  <td><%= r.tutor_name %></td>
+                  <td><i class="fa-solid fa-star" style="color:var(--warning);"></i> <%= r.rating %></td>
+                  <td style="max-width:260px;"><%= r.comment %></td>
+                  <td><%= new Date(r.created_at).toLocaleDateString() %></td>
+                  <td>
+                    <form method="POST" action="/admin/reviews/<%= r.id %>/delete" data-confirm="Delete this review?">
+                      <button type="submit" class="btn btn-ghost btn-sm" style="color:var(--danger);">Delete</button>
+                    </form>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+  </main>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

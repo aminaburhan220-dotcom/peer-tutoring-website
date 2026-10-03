@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('partials/head', { pageTitle: 'How It Works' }) %></head>
+<body>
+<%- include('partials/toasts') %>
+<%- include('partials/navbar', { active: 'how' }) %>
+
+<section class="page-header">
+  <div class="container">
+    <span class="eyebrow">How It Works</span>
+    <h1>From sign-up to your first session</h1>
+  </div>
+</section>
+
+<section class="section-tight">
+  <div class="container">
+    <img src="/images/collaboration-band.jpg" alt="Students collaborating around a laptop during a peer tutoring session" style="width:100%; border-radius:var(--radius-lg); box-shadow:var(--shadow);">
+  </div>
+</section>
+
+<section class="section" style="padding-top:32px;">
+  <div class="container">
+    <div class="section-head"><h2>As a learner</h2></div>
+    <div class="grid grid-4">
+      <div class="card step-card"><div class="step-num">01</div><h3>Create an account</h3><p>Sign up as a student in under a minute — it's free.</p></div>
+      <div class="card step-card"><div class="step-num">02</div><h3>Browse peer tutors</h3><p>Filter by subject, rating, experience, or price to find a fellow student who knows the material.</p></div>
+      <div class="card step-card"><div class="step-num">03</div><h3>Book a session</h3><p>Choose a date and time, add a note, and send your request.</p></div>
+      <div class="card step-card"><div class="step-num">04</div><h3>Learn & review</h3><p>Meet your peer tutor, then leave a rating to help other students.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:#fff;">
+  <div class="container">
+    <div class="section-head"><h2>As a peer tutor</h2></div>
+    <div class="grid grid-4">
+      <div class="card step-card"><div class="step-num">01</div><h3>Add a peer tutor profile</h3><p>Register as a peer tutor, or add it to your existing student account — fill in the subjects you're strong in and your hourly rate.</p></div>
+      <div class="card step-card"><div class="step-num">02</div><h3>Get approved</h3><p>An admin briefly reviews new peer tutor profiles before they're visible to other students.</p></div>
+      <div class="card step-card"><div class="step-num">03</div><h3>Set availability</h3><p>Add the days and times you're free to help other students.</p></div>
+      <div class="card step-card"><div class="step-num">04</div><h3>Accept bookings</h3><p>Review requests, teach sessions, and track your progress.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="cta-band">
+      <h2>Ready when you are</h2>
+      <div class="hero-actions" style="justify-content:center;">
+        <a href="/find-tutors" class="btn btn-primary">Find a Peer Tutor</a>
+        <a href="/register?role=tutor" class="btn btn-outline">Become a Peer Tutor</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+<script src="/js/main.js"></script>
+</body>
+</html>

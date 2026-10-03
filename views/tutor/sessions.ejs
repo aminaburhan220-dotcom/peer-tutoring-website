@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head', { pageTitle: 'My Sessions' }) %></head>
+<body>
+<%- include('../partials/toasts') %>
+<%- include('../partials/navbar', {}) %>
+
+<div class="dash-shell">
+  <%- include('../partials/tutor-sidebar', { active: 'sessions' }) %>
+
+  <main class="dash-main">
+    <%- include('../partials/dash-toggle') %>
+    <div class="dash-header"><div><h1>My Sessions</h1><p>Your accepted and completed tutoring sessions.</p></div></div>
+
+    <div class="panel">
+      <% if (sessions.length === 0) { %>
+        <div class="empty-state"><i class="fa-solid fa-chalkboard-user"></i><p>No sessions yet.</p></div>
+      <% } else { %>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Student</th><th>Subject</th><th>Date</th><th>Time</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <% sessions.forEach(function(s) { %>
+                <tr>
+                  <td><div class="table-avatar"><img src="<%= s.student_avatar %>" alt=""><%= s.student_name %></div></td>
+                  <td><%= s.subject_name %></td>
+                  <td><%= s.session_date %></td>
+                  <td><%= s.start_time %>–<%= s.end_time %></td>
+                  <td><span class="badge badge-<%= s.status %>"><%= s.status %></span></td>
+                  <td>
+                    <% if (s.status === 'accepted') { %>
+                      <form method="POST" action="/tutor/sessions/<%= s.id %>/complete" data-confirm="Mark this session as completed?">
+                        <button type="submit" class="btn btn-outline btn-sm">Mark Complete</button>
+                      </form>
+                    <% } %>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+  </main>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

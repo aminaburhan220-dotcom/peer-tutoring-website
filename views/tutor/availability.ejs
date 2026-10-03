@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head', { pageTitle: 'Availability' }) %></head>
+<body>
+<%- include('../partials/toasts') %>
+<%- include('../partials/navbar', {}) %>
+
+<div class="dash-shell">
+  <%- include('../partials/tutor-sidebar', { active: 'availability' }) %>
+
+  <main class="dash-main">
+    <%- include('../partials/dash-toggle') %>
+    <div class="dash-header"><div><h1>Availability</h1><p>Let students know when you're free to teach.</p></div></div>
+
+    <div class="panel" style="max-width:600px;">
+      <div class="panel-head"><h2>Add a Time Slot</h2></div>
+      <form method="POST" action="/tutor/availability" class="form-row" data-validate style="align-items:end;">
+        <div class="form-group">
+          <label for="day_of_week">Day</label>
+          <select class="form-control" id="day_of_week" name="day_of_week" required>
+            <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+            <option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="start_time">Start</label>
+          <input class="form-control" type="time" id="start_time" name="start_time" required>
+        </div>
+        <div class="form-group" style="grid-column: 1 / -1;">
+          <label for="end_time">End</label>
+          <input class="form-control" type="time" id="end_time" name="end_time" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="grid-column: 1 / -1;">Add Slot</button>
+      </form>
+    </div>
+
+    <div class="panel" style="max-width:600px;">
+      <div class="panel-head"><h2>Your Slots</h2></div>
+      <% if (slots.length === 0) { %>
+        <div class="empty-state"><i class="fa-solid fa-calendar-days"></i><p>No availability added yet.</p></div>
+      <% } else { %>
+        <% slots.forEach(function(s) { %>
+          <div class="flex items-center justify-between" style="padding:12px 0; border-bottom:1px solid var(--line);">
+            <span><strong><%= s.day_of_week %></strong> · <%= s.start_time %>–<%= s.end_time %></span>
+            <form method="POST" action="/tutor/availability/<%= s.id %>/delete" data-confirm="Remove this slot?">
+              <button type="submit" class="btn btn-ghost btn-sm" style="color:var(--danger);"><i class="fa-solid fa-trash"></i></button>
+            </form>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </main>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

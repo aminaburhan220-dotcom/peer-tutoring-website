@@ -1,0 +1,22 @@
+<aside class="dash-sidebar" id="dashSidebar">
+  <div class="side-user">
+    <img src="<%= currentUser.avatar || '/images/default-avatar.svg' %>" alt="">
+    <div>
+      <strong><%= currentUser.full_name %></strong>
+      <span>Admin</span>
+    </div>
+  </div>
+  <a href="/admin/dashboard" class="side-link <%= active === 'dashboard' ? 'active' : '' %>"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+  <a href="/admin/students" class="side-link <%= active === 'students' ? 'active' : '' %>"><i class="fa-solid fa-user-graduate"></i> Manage Students</a>
+  <a href="/admin/tutors" class="side-link <%= active === 'tutors' ? 'active' : '' %>"><i class="fa-solid fa-chalkboard-user"></i> Manage Peer Tutors</a>
+  <a href="/admin/subjects" class="side-link <%= active === 'subjects' ? 'active' : '' %>"><i class="fa-solid fa-book"></i> Manage Subjects</a>
+  <a href="/admin/bookings" class="side-link <%= active === 'bookings' ? 'active' : '' %>"><i class="fa-solid fa-calendar-check"></i> Manage Bookings</a>
+  <a href="/admin/reviews" class="side-link <%= active === 'reviews' ? 'active' : '' %>"><i class="fa-solid fa-star"></i> Manage Reviews</a>
+  <a href="/admin/messages" class="side-link <%= active === 'messages' ? 'active' : '' %>"><i class="fa-solid fa-comments"></i> Manage Messages</a>
+  <a href="/admin/reports" class="side-link <%= active === 'reports' ? 'active' : '' %>"><i class="fa-solid fa-chart-column"></i> Reports</a>
+  <a href="/admin/activity-logs" class="side-link <%= active === 'activity' ? 'active' : '' %>"><i class="fa-solid fa-list-check"></i> Activity Logs</a>
+  <a href="/admin/settings" class="side-link <%= active === 'settings' ? 'active' : '' %>"><i class="fa-solid fa-gear"></i> Settings</a>
+  <form action="/logout" method="POST">
+    <button type="submit" class="side-link logout-link" style="width:100%; background:none; border:none; text-align:left; font: inherit; cursor:pointer;"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+  </form>
+</aside>

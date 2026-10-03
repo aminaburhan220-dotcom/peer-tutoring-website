@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('partials/head', { pageTitle: 'Page Not Found' }) %></head>
+<body>
+<%- include('partials/navbar', {}) %>
+
+<div class="error-page">
+  <div>
+    <div class="code">404</div>
+    <h1>This page wandered off</h1>
+    <p style="max-width:420px; margin:0 auto 24px;">We couldn't find the page you're looking for. It may have been moved or no longer exists.</p>
+    <div class="hero-actions" style="justify-content:center;">
+      <a href="/" class="btn btn-primary">Back to Home</a>
+      <a href="/find-tutors" class="btn btn-outline">Find a Peer Tutor</a>
+    </div>
+  </div>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

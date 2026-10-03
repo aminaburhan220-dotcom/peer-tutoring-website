@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head', { pageTitle: 'Activity Logs' }) %></head>
+<body>
+<%- include('../partials/toasts') %>
+<%- include('../partials/navbar', {}) %>
+
+<div class="dash-shell">
+  <%- include('../partials/admin-sidebar', { active: 'activity' }) %>
+
+  <main class="dash-main">
+    <%- include('../partials/dash-toggle') %>
+    <div class="dash-header"><div><h1>Activity Logs</h1><p>A running record of key events across the platform.</p></div></div>
+
+    <div class="panel">
+      <% if (logs.length === 0) { %>
+        <div class="empty-state"><i class="fa-solid fa-list-check"></i><p>No activity recorded yet.</p></div>
+      <% } else { %>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Event</th><th>Description</th><th>When</th></tr></thead>
+            <tbody>
+              <% logs.forEach(function(l) { %>
+                <tr>
+                  <td><span class="badge badge-completed"><%= l.type.replace(/_/g, ' ') %></span></td>
+                  <td><%= l.description %></td>
+                  <td><%= new Date(l.created_at).toLocaleString() %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+  </main>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

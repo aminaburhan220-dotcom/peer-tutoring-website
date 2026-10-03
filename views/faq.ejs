@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('partials/head', { pageTitle: 'FAQ' }) %></head>
+<body>
+<%- include('partials/toasts') %>
+<%- include('partials/navbar', { active: 'faq' }) %>
+
+<section class="page-header">
+  <div class="container">
+    <span class="eyebrow">FAQ</span>
+    <h1>Frequently asked questions</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="max-width:760px;">
+    <div class="faq-item open">
+      <div class="faq-q"><span>How much does peer tutoring cost?</span><i class="fa-solid fa-plus"></i></div>
+      <div class="faq-a"><p>Each peer tutor sets their own hourly rate, typically between $10-$25/hour, shown clearly on their profile before you book.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><span>How do I become a peer tutor?</span><i class="fa-solid fa-plus"></i></div>
+      <div class="faq-a"><p>If you're already a student on PeerTutor, click "Become a Peer Tutor" from your dashboard — it adds a peer tutor profile to your existing account, so you keep learning too. New here? Choose "I'm here to teach" when you register. Either way, fill in the subjects you're strong in — an admin briefly reviews new peer tutor profiles before they're visible to other students.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><span>What subjects are available?</span><i class="fa-solid fa-plus"></i></div>
+      <div class="faq-a"><p>We currently support English, Spanish, Web Development, Computer Science, Graphic Design, and Artificial Intelligence, with more subjects added as peer tutors join.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><span>Can I be a learner and a peer tutor at the same time?</span><i class="fa-solid fa-plus"></i></div>
+      <div class="faq-a"><p>Yes — that's actually the normal case. You might tutor Web Development because you're strong in it, while booking sessions yourself to learn Spanish from someone else. Switch between your Learner and Peer Tutor dashboards anytime from the navigation bar.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><span>Can I cancel a booking?</span><i class="fa-solid fa-plus"></i></div>
+      <div class="faq-a"><p>Yes, you can cancel a pending or accepted booking from your dashboard under "My Bookings."</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><span>How do I leave a review?</span><i class="fa-solid fa-plus"></i></div>
+      <div class="faq-a"><p>Once a session is marked complete by your peer tutor, you'll be able to leave a star rating and comment from the "Reviews" tab of your dashboard.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q"><span>Is my information kept private?</span><i class="fa-solid fa-plus"></i></div>
+      <div class="faq-a"><p>Your password is securely hashed, and your dashboard is only accessible to you. We never share your contact details outside of the in-app messaging system.</p></div>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+<script src="/js/main.js"></script>
+</body>
+</html>

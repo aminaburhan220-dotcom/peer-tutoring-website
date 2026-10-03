@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head', { pageTitle: 'Home' }) %>
+</head>
+<body>
+<%- include('partials/toasts') %>
+<%- include('partials/navbar', { active: 'home' }) %>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-copy">
+      <span class="eyebrow">Student-to-student peer tutoring</span>
+      <h1>Learn Together.<br>Grow Together.</h1>
+      <p class="lead">PeerTutor connects students who need help with fellow students who are strong in that subject — no professional instructors, just students teaching students.</p>
+      <div class="hero-actions">
+        <a href="/find-tutors" class="btn btn-primary">Find a Peer Tutor</a>
+        <a href="/register?role=tutor" class="btn btn-outline">Become a Peer Tutor</a>
+      </div>
+    </div>
+    <div class="hero-media">
+      <img src="/images/hero-students.jpg" alt="A diverse group of university students studying together and celebrating collaborative learning">
+      <div class="hero-badge">
+        <div class="dot"><i class="fa-solid fa-users"></i></div>
+        <div>
+          <strong style="display:block; font-size:1.1rem;"><%= stats.students.toLocaleString() %>+</strong>
+          <span style="font-size:.78rem; color:var(--ink-faint);">students learning</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY CHOOSE US -->
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Why PeerTutor</span>
+      <h2>A better way to learn, together</h2>
+      <p>We connect you with fellow students who've mastered the material and love helping others succeed.</p>
+    </div>
+    <div class="grid grid-3">
+      <div class="card subject-card">
+        <div class="subject-icon"><i class="fa-solid fa-user-graduate"></i></div>
+        <h3>Peer-Led Learning</h3>
+        <p>Learn from students who recently mastered the same material — relatable explanations that just click.</p>
+      </div>
+      <div class="card subject-card">
+        <div class="subject-icon"><i class="fa-solid fa-sack-dollar"></i></div>
+        <h3>Affordable Rates</h3>
+        <p>Peer tutoring costs a fraction of professional tutoring, without sacrificing quality guidance.</p>
+      </div>
+      <div class="card subject-card">
+        <div class="subject-icon"><i class="fa-solid fa-shield-heart"></i></div>
+        <h3>Verified Tutors</h3>
+        <p>Every tutor profile is reviewed by our team before it goes live, so you can book with confidence.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" style="background:#fff;">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Getting started</span>
+      <h2>How PeerTutor works</h2>
+    </div>
+    <div class="grid grid-3">
+      <div class="card step-card">
+        <div class="step-num">01</div>
+        <h3>Browse subjects</h3>
+        <p>Explore subjects and compare tutor profiles, ratings, and availability.</p>
+      </div>
+      <div class="card step-card">
+        <div class="step-num">02</div>
+        <h3>Book a session</h3>
+        <p>Pick a time that works for you and send a booking request in seconds.</p>
+      </div>
+      <div class="card step-card">
+        <div class="step-num">03</div>
+        <h3>Learn & grow</h3>
+        <p>Meet with your tutor, ask questions, and track your progress over time.</p>
+      </div>
+    </div>
+    <div class="text-center" style="margin-top:32px;">
+      <a href="/how-it-works" class="btn btn-outline">Learn more about how it works</a>
+    </div>
+  </div>
+</section>
+
+<!-- POPULAR SUBJECTS -->
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Popular subjects</span>
+      <h2>Find tutoring in your favorite subjects</h2>
+    </div>
+    <div class="grid grid-3">
+      <% subjects.forEach(function(s) { %>
+        <div class="card subject-card">
+          <div class="subject-icon"><i class="fa-solid <%= s.icon || 'fa-book' %>"></i></div>
+          <h3><%= s.name %></h3>
+          <p><%= s.description %></p>
+          <div class="subject-meta">
+            <span class="count-pill"><%= s.tutorCount %> tutors</span>
+            <a href="/find-tutors?subject=<%= encodeURIComponent(s.name) %>" class="btn btn-ghost btn-sm">View Tutors <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED TUTORS -->
+<section class="section" style="background:#fff;">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Meet the peer tutors</span>
+      <h2>Featured peer tutors this week</h2>
+    </div>
+    <div class="grid grid-4">
+      <% featuredTutors.forEach(function(t) { %>
+        <div class="card tutor-card">
+          <img class="tutor-photo" src="<%= t.avatar %>" alt="Portrait of tutor <%= t.full_name %>">
+          <div class="tutor-body">
+            <h3><%= t.full_name %></h3>
+            <div class="tutor-sub"><%= t.department || 'PeerTutor Tutor' %></div>
+            <div class="rating"><i class="fa-solid fa-star"></i> <%= t.average_rating.toFixed(1) %> <span class="muted">/ 5.0</span></div>
+            <a href="/tutors/<%= t.id %>" class="btn btn-outline btn-block btn-sm">View Profile</a>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<!-- BENEFITS -->
+<section class="section">
+  <div class="container">
+    <div class="grid grid-2" style="align-items:center;">
+      <div>
+        <span class="eyebrow">For students</span>
+        <h2>Everything you need to succeed academically</h2>
+        <ul style="display:flex; flex-direction:column; gap:14px; margin-top:20px;">
+          <li><i class="fa-solid fa-circle-check" style="color:var(--primary); margin-right:10px;"></i>Flexible scheduling around your classes</li>
+          <li><i class="fa-solid fa-circle-check" style="color:var(--primary); margin-right:10px;"></i>Affordable, transparent hourly rates</li>
+          <li><i class="fa-solid fa-circle-check" style="color:var(--primary); margin-right:10px;"></i>Direct messaging with your peer tutor</li>
+          <li><i class="fa-solid fa-circle-check" style="color:var(--primary); margin-right:10px;"></i>Save favorite peer tutors for future sessions</li>
+        </ul>
+      </div>
+      <img src="/images/student-focus.jpg" alt="Focused students working together on a laptop during a peer tutoring session" style="border-radius:var(--radius-lg); box-shadow:var(--shadow);">
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:#fff;">
+  <div class="container">
+    <div class="grid grid-2" style="align-items:center;">
+      <img src="/images/mentor-moment.jpg" alt="Peer tutor leaning in to help fellow students with coursework" style="border-radius:var(--radius-lg); box-shadow:var(--shadow);">
+      <div>
+        <span class="eyebrow">For peer tutors</span>
+        <h2>Share what you know — and grow while you teach</h2>
+        <ul style="display:flex; flex-direction:column; gap:14px; margin-top:20px;">
+          <li><i class="fa-solid fa-circle-check" style="color:var(--secondary); margin-right:10px;"></i>Set your own hourly rate and availability</li>
+          <li><i class="fa-solid fa-circle-check" style="color:var(--secondary); margin-right:10px;"></i>Build your reputation with student reviews</li>
+          <li><i class="fa-solid fa-circle-check" style="color:var(--secondary); margin-right:10px;"></i>Track your sessions and earnings from your dashboard</li>
+          <li><i class="fa-solid fa-circle-check" style="color:var(--secondary); margin-right:10px;"></i>Reinforce your own skills by teaching fellow students</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<% if (testimonials.length) { %>
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Testimonials</span>
+      <h2>What students are saying</h2>
+    </div>
+    <div class="grid grid-3">
+      <% testimonials.forEach(function(r) { %>
+        <div class="card testimonial-card">
+          <div class="stars">
+            <% for (let i=0;i<5;i++) { %><i class="fa-solid fa-star" style="<%= i < r.rating ? '' : 'color:var(--line);' %>"></i><% } %>
+          </div>
+          <p>"<%= r.comment %>"</p>
+          <div class="testimonial-person">
+            <img src="<%= r.student_avatar || '/images/default-avatar.svg' %>" alt="">
+            <div>
+              <strong style="display:block; font-size:.88rem;"><%= r.student_name %></strong>
+              <span style="font-size:.78rem; color:var(--ink-faint);">Tutored by <%= r.tutor_name %></span>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<!-- STATS -->
+<section class="section" style="background:#fff;">
+  <div class="container">
+    <div class="stats-bar">
+      <div class="grid grid-4">
+        <div><div class="stat-num"><%= stats.students %>+</div><div class="stat-label">Registered Students</div></div>
+        <div><div class="stat-num"><%= stats.tutors %>+</div><div class="stat-label">Active Tutors</div></div>
+        <div><div class="stat-num"><%= stats.subjects %></div><div class="stat-label">Available Subjects</div></div>
+        <div><div class="stat-num"><%= stats.sessions %>+</div><div class="stat-label">Completed Sessions</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section">
+  <div class="container">
+    <div class="cta-band">
+      <h2>Ready to start learning together?</h2>
+      <p>Join PeerTutor today and connect with a tutor who gets it.</p>
+      <div class="hero-actions" style="justify-content:center;">
+        <a href="/register" class="btn btn-primary">Get Started Free</a>
+        <a href="/subjects" class="btn btn-outline">Browse Subjects</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+<script src="/js/main.js"></script>
+</body>
+</html>

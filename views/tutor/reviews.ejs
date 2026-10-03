@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head', { pageTitle: 'Reviews' }) %></head>
+<body>
+<%- include('../partials/toasts') %>
+<%- include('../partials/navbar', {}) %>
+
+<div class="dash-shell">
+  <%- include('../partials/tutor-sidebar', { active: 'reviews' }) %>
+
+  <main class="dash-main">
+    <%- include('../partials/dash-toggle') %>
+    <div class="dash-header">
+      <div><h1>Reviews</h1><p>What your students are saying.</p></div>
+      <div class="rating" style="font-size:1.1rem;"><i class="fa-solid fa-star"></i> <%= tutor.average_rating.toFixed(1) %> <span class="muted">/ 5.0</span></div>
+    </div>
+
+    <div class="panel">
+      <% if (reviews.length === 0) { %>
+        <div class="empty-state"><i class="fa-solid fa-star"></i><p>No reviews yet.</p></div>
+      <% } else { %>
+        <% reviews.forEach(function(r) { %>
+          <div style="padding:16px 0; border-bottom:1px solid var(--line);">
+            <div class="testimonial-person" style="margin-top:0; margin-bottom:8px;">
+              <img src="<%= r.student_avatar || '/images/default-avatar.svg' %>" alt="">
+              <div>
+                <strong style="display:block; font-size:.9rem;"><%= r.student_name %></strong>
+                <span style="font-size:.76rem; color:var(--ink-faint);"><%= new Date(r.created_at).toLocaleDateString() %></span>
+              </div>
+            </div>
+            <div class="stars" style="margin-bottom:6px;">
+              <% for (let i=0;i<5;i++) { %><i class="fa-solid fa-star" style="<%= i < r.rating ? 'color:var(--warning);' : 'color:var(--line);' %>"></i><% } %>
+            </div>
+            <p style="margin:0;"><%= r.comment %></p>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </main>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

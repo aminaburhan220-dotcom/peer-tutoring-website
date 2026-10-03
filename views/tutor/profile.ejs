@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head', { pageTitle: 'My Profile' }) %></head>
+<body>
+<%- include('../partials/toasts') %>
+<%- include('../partials/navbar', {}) %>
+
+<div class="dash-shell">
+  <%- include('../partials/tutor-sidebar', { active: 'profile' }) %>
+
+  <main class="dash-main">
+    <%- include('../partials/dash-toggle') %>
+    <div class="dash-header"><div><h1>My Profile</h1><p>Update your teaching profile — this is what students see.</p></div></div>
+
+    <div class="panel" style="max-width:680px;">
+      <form method="POST" action="/tutor/profile" enctype="multipart/form-data" data-validate>
+        <div class="form-group">
+          <label>Profile Picture</label>
+          <div class="avatar-upload-row">
+            <img id="avatarPreview" src="<%= user.avatar || '/images/avatar-male.svg' %>" alt="">
+            <label class="file-input-label">
+              <i class="fa-solid fa-camera"></i> Change Photo
+              <input type="file" name="avatar" accept="image/png, image/jpeg, image/webp" data-preview="avatarPreview">
+            </label>
+          </div>
+          <div class="field-hint">JPG, PNG or WEBP, up to 2MB. If you don't upload a photo, your avatar matches the gender you selected at sign-up.</div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="full_name">Full Name</label>
+            <input class="form-control" type="text" id="full_name" name="full_name" value="<%= user.full_name %>" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone</label>
+            <input class="form-control" type="text" id="phone" name="phone" value="<%= user.phone || '' %>">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input class="form-control" type="email" value="<%= user.email %>" disabled>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="qualification">Qualification</label>
+            <input class="form-control" type="text" id="qualification" name="qualification" value="<%= tutor.qualification || '' %>" placeholder="e.g. B.Sc. Computer Science">
+          </div>
+          <div class="form-group">
+            <label for="experience_years">Years of Experience</label>
+            <input class="form-control" type="number" min="0" id="experience_years" name="experience_years" value="<%= tutor.experience_years %>">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="university">University</label>
+            <input class="form-control" type="text" id="university" name="university" value="<%= tutor.university || '' %>">
+          </div>
+          <div class="form-group">
+            <label for="department">Department</label>
+            <input class="form-control" type="text" id="department" name="department" value="<%= tutor.department || '' %>">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="hourly_rate">Hourly Rate (USD)</label>
+          <input class="form-control" type="number" min="0" step="0.5" id="hourly_rate" name="hourly_rate" value="<%= tutor.hourly_rate %>">
+        </div>
+        <div class="form-group">
+          <label for="delivery_mode">Session Availability</label>
+          <select class="form-control" id="delivery_mode" name="delivery_mode">
+            <option value="online" <%= tutor.delivery_mode === 'online' ? 'selected' : '' %>>Online only</option>
+            <option value="in-person" <%= tutor.delivery_mode === 'in-person' ? 'selected' : '' %>>In-person only</option>
+            <option value="both" <%= tutor.delivery_mode === 'both' ? 'selected' : '' %>>Both online and in-person</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="bio">Bio</label>
+          <textarea class="form-control" id="bio" name="bio"><%= tutor.bio || '' %></textarea>
+        </div>
+        <div class="form-group">
+          <label for="teaching_method">Teaching Method</label>
+          <textarea class="form-control" id="teaching_method" name="teaching_method" placeholder="How do you like to teach?"><%= tutor.teaching_method || '' %></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+      </form>
+    </div>
+  </main>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

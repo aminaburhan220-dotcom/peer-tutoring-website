@@ -1,0 +1,10 @@
+<% if ((success && success.length) || (error && error.length)) { %>
+<div class="toast-stack">
+  <% success.forEach(function(msg) { %>
+    <div class="toast"><i class="fa-solid fa-circle-check" style="color:#3FAE79;margin-right:8px;"></i><%= msg %></div>
+  <% }) %>
+  <% error.forEach(function(msg) { %>
+    <div class="toast error"><i class="fa-solid fa-circle-exclamation" style="color:#E2645C;margin-right:8px;"></i><%= msg %></div>
+  <% }) %>
+</div>
+<% } %>

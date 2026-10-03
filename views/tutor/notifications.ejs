@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head', { pageTitle: 'Notifications' }) %></head>
+<body>
+<%- include('../partials/toasts') %>
+<%- include('../partials/navbar', {}) %>
+
+<div class="dash-shell">
+  <%- include('../partials/tutor-sidebar', { active: 'notifications' }) %>
+
+  <main class="dash-main">
+    <%- include('../partials/dash-toggle') %>
+    <div class="dash-header"><div><h1>Notifications</h1><p>Stay up to date on requests, messages, and reviews.</p></div></div>
+
+    <div class="panel">
+      <% if (notifications.length === 0) { %>
+        <div class="empty-state"><i class="fa-solid fa-bell"></i><p>No notifications yet.</p></div>
+      <% } else { %>
+        <% notifications.forEach(function(n) { %>
+          <a href="<%= n.link || '#' %>" style="display:flex; gap:14px; padding:14px 0; border-bottom:1px solid var(--line);">
+            <div class="icon" style="width:40px; height:40px; border-radius:12px; background:var(--primary-light); color:var(--primary-dark); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+              <i class="fa-solid fa-bell"></i>
+            </div>
+            <div>
+              <p style="margin:0; color:var(--ink); font-weight:<%= n.is_read ? '500' : '700' %>;"><%= n.content %></p>
+              <span style="font-size:.78rem; color:var(--ink-faint);"><%= new Date(n.created_at).toLocaleString() %></span>
+            </div>
+          </a>
+        <% }) %>
+      <% } %>
+    </div>
+  </main>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

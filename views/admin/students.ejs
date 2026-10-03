@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head', { pageTitle: 'Manage Students' }) %></head>
+<body>
+<%- include('../partials/toasts') %>
+<%- include('../partials/navbar', {}) %>
+
+<div class="dash-shell">
+  <%- include('../partials/admin-sidebar', { active: 'students' }) %>
+
+  <main class="dash-main">
+    <%- include('../partials/dash-toggle') %>
+    <div class="dash-header"><div><h1>Manage Students</h1><p><%= students.length %> student<%= students.length===1?'':'s' %> registered.</p></div></div>
+
+    <form method="GET" action="/admin/students" class="flex gap-8" style="margin-bottom:20px; max-width:400px;" data-no-loading>
+      <input class="form-control" type="text" name="q" placeholder="Search by name or email..." value="<%= q %>">
+      <button type="submit" class="btn btn-outline">Search</button>
+    </form>
+
+    <div class="panel">
+      <% if (students.length === 0) { %>
+        <div class="empty-state"><i class="fa-solid fa-user-graduate"></i><p>No students found.</p></div>
+      <% } else { %>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Student</th><th>Email</th><th>University</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+              <% students.forEach(function(s) { %>
+                <tr>
+                  <td><%= s.full_name %></td>
+                  <td><%= s.email %></td>
+                  <td><%= s.university || '—' %></td>
+                  <td><span class="badge <%= s.is_active ? 'badge-accepted' : 'badge-rejected' %>"><%= s.is_active ? 'Active' : 'Inactive' %></span></td>
+                  <td class="flex gap-8">
+                    <a href="/admin/students/<%= s.id %>/edit" class="btn btn-ghost btn-sm">Edit</a>
+                    <form method="POST" action="/admin/students/<%= s.id %>/toggle-active"><button type="submit" class="btn btn-ghost btn-sm"><%= s.is_active ? 'Deactivate' : 'Activate' %></button></form>
+                    <form method="POST" action="/admin/students/<%= s.id %>/delete" data-confirm="Delete this student account? This cannot be undone."><button type="submit" class="btn btn-ghost btn-sm" style="color:var(--danger);">Delete</button></form>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+  </main>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

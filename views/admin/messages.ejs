@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head', { pageTitle: 'Manage Messages' }) %></head>
+<body>
+<%- include('../partials/toasts') %>
+<%- include('../partials/navbar', {}) %>
+
+<div class="dash-shell">
+  <%- include('../partials/admin-sidebar', { active: 'messages' }) %>
+
+  <main class="dash-main">
+    <%- include('../partials/dash-toggle') %>
+    <div class="dash-header"><div><h1>Manage Messages</h1><p>Most recent platform messages (read-only moderation view).</p></div></div>
+
+    <div class="panel">
+      <% if (messages.length === 0) { %>
+        <div class="empty-state"><i class="fa-solid fa-comments"></i><p>No messages yet.</p></div>
+      <% } else { %>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>From</th><th>To</th><th>Message</th><th>Sent</th></tr></thead>
+            <tbody>
+              <% messages.forEach(function(m) { %>
+                <tr>
+                  <td><%= m.sender_name %></td>
+                  <td><%= m.receiver_name %></td>
+                  <td style="max-width:320px;"><%= m.content %></td>
+                  <td><%= new Date(m.created_at).toLocaleString() %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+  </main>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('partials/head', { pageTitle: 'Find Peer Tutors' }) %></head>
+<body>
+<%- include('partials/toasts') %>
+<%- include('partials/navbar', { active: 'find' }) %>
+
+<section class="page-header" style="padding:40px 0;">
+  <div class="container">
+    <span class="eyebrow">Find Peer Tutors</span>
+    <h1>Find a fellow student who can help</h1>
+  </div>
+</section>
+
+<section class="section" style="padding-top:32px;">
+  <div class="container">
+
+    <form method="GET" action="/find-tutors" class="filter-bar" data-no-loading>
+      <div class="form-group" style="margin-bottom:0;">
+        <label for="q">Search by name</label>
+        <input class="form-control" type="text" id="q" name="q" placeholder="e.g. David" value="<%= query.q || '' %>">
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label for="subject">Subject</label>
+        <select class="form-control" id="subject" name="subject">
+          <option value="">All</option>
+          <% subjects.forEach(function(s) { %>
+            <option value="<%= s.name %>" <%= query.subject === s.name ? 'selected' : '' %>><%= s.name %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label for="rating">Min. Rating</label>
+        <select class="form-control" id="rating" name="rating">
+          <option value="">Any</option>
+          <option value="4.5" <%= query.rating === '4.5' ? 'selected' : '' %>>4.5+</option>
+          <option value="4" <%= query.rating === '4' ? 'selected' : '' %>>4.0+</option>
+          <option value="3" <%= query.rating === '3' ? 'selected' : '' %>>3.0+</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label for="experience">Experience</label>
+        <select class="form-control" id="experience" name="experience">
+          <option value="">Any</option>
+          <option value="1" <%= query.experience === '1' ? 'selected' : '' %>>1+ years</option>
+          <option value="2" <%= query.experience === '2' ? 'selected' : '' %>>2+ years</option>
+          <option value="3" <%= query.experience === '3' ? 'selected' : '' %>>3+ years</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label for="department">Department</label>
+        <input class="form-control" type="text" id="department" name="department" placeholder="e.g. Computer Science" value="<%= query.department || '' %>">
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label for="availability">Availability</label>
+        <select class="form-control" id="availability" name="availability">
+          <option value="">Online or In-Person</option>
+          <option value="online" <%= query.availability === 'online' ? 'selected' : '' %>>Online</option>
+          <option value="in-person" <%= query.availability === 'in-person' ? 'selected' : '' %>>In-Person</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label for="sort">Sort by</label>
+        <select class="form-control" id="sort" name="sort">
+          <option value="rating" <%= query.sort === 'rating' || !query.sort ? 'selected' : '' %>>Top Rated</option>
+          <option value="price_low" <%= query.sort === 'price_low' ? 'selected' : '' %>>Price: Low to High</option>
+          <option value="price_high" <%= query.sort === 'price_high' ? 'selected' : '' %>>Price: High to Low</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
+
+    <p style="margin-bottom:20px; color:var(--ink-faint); font-weight:600; font-size:.9rem;"><%= tutors.length %> tutor<%= tutors.length === 1 ? '' : 's' %> found</p>
+
+    <% if (tutors.length === 0) { %>
+      <div class="empty-state">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <% if (totalApprovedTutors === 0) { %>
+          <h3>No tutors are available yet</h3>
+          <p>
+            This usually means the database hasn't been seeded with demo tutors yet, or every registered
+            tutor is still waiting on admin approval.<br>
+            If you're setting this project up locally: run <code>npm run seed</code> in your terminal, then
+            refresh this page.<br>
+            If a tutor just registered: an admin needs to approve them from <strong>Admin &rarr; Manage Tutors</strong>
+            before they appear here.
+          </p>
+        <% } else { %>
+          <h3>No tutors match your filters</h3>
+          <p>Try adjusting your search or browsing all subjects.</p>
+          <a href="/find-tutors" class="btn btn-outline">Clear filters</a>
+        <% } %>
+      </div>
+    <% } else { %>
+      <div class="grid grid-4">
+        <% tutors.forEach(function(t) { %>
+          <div class="card tutor-card">
+            <img class="tutor-photo" src="<%= t.avatar %>" alt="Portrait of tutor <%= t.full_name %>">
+            <div class="tutor-body">
+              <h3><%= t.full_name %></h3>
+              <div class="tutor-sub"><%= t.qualification || t.department || 'Peer Tutor' %></div>
+              <div class="rating"><i class="fa-solid fa-star"></i> <%= t.average_rating.toFixed(1) %> <span class="muted">(<%= t.total_sessions %> sessions)</span></div>
+              <div class="tag-list">
+                <% (t.subjectNames || '').split(',').filter(Boolean).slice(0,3).forEach(function(name) { %>
+                  <span class="tag"><%= name %></span>
+                <% }) %>
+              </div>
+              <div class="flex items-center gap-8" style="margin-bottom:10px;">
+                <span class="badge <%= t.delivery_mode === 'online' ? 'badge-available' : t.delivery_mode === 'in-person' ? 'badge-pending' : 'badge-completed' %>">
+                  <i class="fa-solid <%= t.delivery_mode === 'online' ? 'fa-wifi' : t.delivery_mode === 'in-person' ? 'fa-location-dot' : 'fa-globe' %>"></i>
+                  <%= t.delivery_mode === 'online' ? 'Online' : t.delivery_mode === 'in-person' ? 'In-Person' : 'Online & In-Person' %>
+                </span>
+              </div>
+              <div class="tutor-foot">
+                <div class="price"><%= t.hourly_rate %> USD<small>/hr</small></div>
+                <span style="font-size:.78rem; color:var(--ink-faint);"><%= t.experience_years %> yrs exp.</span>
+              </div>
+            </div>
+            <div class="card-actions">
+              <a href="/tutors/<%= t.id %>" class="btn btn-outline btn-sm w-full">View Profile</a>
+              <% if (currentUser && currentUser.role === 'student') { %>
+                <a href="/student/book/<%= t.id %>" class="btn btn-primary btn-sm w-full">Book</a>
+              <% } else { %>
+                <a href="/login" class="btn btn-primary btn-sm w-full">Book</a>
+              <% } %>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+<script src="/js/main.js"></script>
+</body>
+</html>

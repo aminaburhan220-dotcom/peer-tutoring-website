@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('partials/head', { pageTitle: 'About Us' }) %></head>
+<body>
+<%- include('partials/toasts') %>
+<%- include('partials/navbar', { active: 'about' }) %>
+
+<section class="page-header">
+  <div class="container">
+    <span class="eyebrow">About PeerTutor</span>
+    <h1>A community where students teach students</h1>
+    <p style="max-width:600px; margin:0 auto;">PeerTutor is not a marketplace for professional tutors or outside instructors. Every peer tutor here is a fellow student who is strong in a subject and chose to help others learn it — nothing more, nothing less.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="grid grid-2" style="align-items:center;">
+      <div>
+        <span class="eyebrow">The idea</span>
+        <h2>Why student-to-student learning works</h2>
+        <p>The best explanation of a hard concept often comes from someone who struggled with it recently — a classmate, not a professional. A Computer Science student who's strong in Web Development can teach another student. Someone confident in Spanish can help a classmate practice. That's the whole model.</p>
+        <p>Any student can be a learner in one subject and a peer tutor in another — at the same time, on the same account. Find a peer tutor when you need help, or become one yourself in a subject you know well.</p>
+      </div>
+      <img src="/images/collaboration-band.jpg" alt="Group of students collaborating around a table with laptops and notes" style="border-radius:var(--radius-lg); box-shadow:var(--shadow);">
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:#fff;">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">What we value</span>
+      <h2>The principles behind PeerTutor</h2>
+    </div>
+    <div class="grid grid-3">
+      <div class="card subject-card">
+        <div class="subject-icon"><i class="fa-solid fa-handshake"></i></div>
+        <h3>Accessibility</h3>
+        <p>Academic support shouldn't be a luxury. Peer rates, set by students for students, keep it within reach.</p>
+      </div>
+      <div class="card subject-card">
+        <div class="subject-icon"><i class="fa-solid fa-seedling"></i></div>
+        <h3>Growth on both sides</h3>
+        <p>Teaching reinforces mastery. Peer tutors deepen their own understanding while helping a classmate.</p>
+      </div>
+      <div class="card subject-card">
+        <div class="subject-icon"><i class="fa-solid fa-shield-heart"></i></div>
+        <h3>Trust & safety</h3>
+        <p>Every peer tutor profile is reviewed before appearing publicly, and every session is backed by real student reviews.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="cta-band">
+      <h2>Want to join the community?</h2>
+      <p>Whether you need help or you know a subject well enough to teach it, there's a place for you here.</p>
+      <div class="hero-actions" style="justify-content:center;">
+        <a href="/register" class="btn btn-primary">Create an Account</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+<script src="/js/main.js"></script>
+</body>
+</html>

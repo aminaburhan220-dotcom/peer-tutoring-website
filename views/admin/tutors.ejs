@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head', { pageTitle: 'Manage Peer Tutors' }) %></head>
+<body>
+<%- include('../partials/toasts') %>
+<%- include('../partials/navbar', {}) %>
+
+<div class="dash-shell">
+  <%- include('../partials/admin-sidebar', { active: 'tutors' }) %>
+
+  <main class="dash-main">
+    <%- include('../partials/dash-toggle') %>
+    <div class="dash-header"><div><h1>Manage Peer Tutors</h1><p><%= tutors.length %> tutor<%= tutors.length===1?'':'s' %> found.</p></div></div>
+
+    <form method="GET" action="/admin/tutors" class="flex gap-8" style="margin-bottom:20px; flex-wrap:wrap;" data-no-loading>
+      <input class="form-control" type="text" name="q" placeholder="Search by name or email..." value="<%= q %>" style="max-width:280px;">
+      <select class="form-control" name="status" style="max-width:180px;">
+        <option value="">All Statuses</option>
+        <option value="pending" <%= status==='pending'?'selected':'' %>>Pending</option>
+        <option value="approved" <%= status==='approved'?'selected':'' %>>Approved</option>
+        <option value="rejected" <%= status==='rejected'?'selected':'' %>>Rejected</option>
+      </select>
+      <button type="submit" class="btn btn-outline">Filter</button>
+    </form>
+
+    <div class="panel">
+      <% if (tutors.length === 0) { %>
+        <div class="empty-state"><i class="fa-solid fa-chalkboard-user"></i><p>No tutors found.</p></div>
+      <% } else { %>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Tutor</th><th>Email</th><th>Rate</th><th>Status</th><th>Account</th><th>Actions</th></tr></thead>
+            <tbody>
+              <% tutors.forEach(function(t) { %>
+                <tr>
+                  <td><%= t.full_name %></td>
+                  <td><%= t.email %></td>
+                  <td>$<%= t.hourly_rate %>/hr</td>
+                  <td><span class="badge badge-<%= t.status === 'approved' ? 'accepted' : t.status %>"><%= t.status %></span></td>
+                  <td><span class="badge <%= t.is_active ? 'badge-accepted' : 'badge-rejected' %>"><%= t.is_active ? 'Active' : 'Inactive' %></span></td>
+                  <td class="flex gap-8" style="flex-wrap:wrap;">
+                    <% if (t.status === 'pending') { %>
+                      <form method="POST" action="/admin/tutors/<%= t.id %>/approve"><button type="submit" class="btn btn-ghost btn-sm" style="color:var(--success);">Approve</button></form>
+                      <form method="POST" action="/admin/tutors/<%= t.id %>/reject"><button type="submit" class="btn btn-ghost btn-sm" style="color:var(--danger);">Reject</button></form>
+                    <% } %>
+                    <a href="/admin/tutors/<%= t.id %>/edit" class="btn btn-ghost btn-sm">Edit</a>
+                    <form method="POST" action="/admin/tutors/<%= t.id %>/toggle-active"><button type="submit" class="btn btn-ghost btn-sm"><%= t.is_active ? 'Deactivate' : 'Activate' %></button></form>
+                    <form method="POST" action="/admin/tutors/<%= t.id %>/delete" data-confirm="Delete this tutor account? This cannot be undone."><button type="submit" class="btn btn-ghost btn-sm" style="color:var(--danger);">Delete</button></form>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+  </main>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

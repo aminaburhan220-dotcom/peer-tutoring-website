@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('partials/head', { pageTitle: tutor.full_name }) %></head>
+<body>
+<%- include('partials/toasts') %>
+<%- include('partials/navbar', { active: 'find' }) %>
+
+<section class="section-tight">
+  <div class="container">
+    <div class="grid" style="grid-template-columns: 320px 1fr; gap: 32px; align-items:start;">
+
+      <div class="card" style="padding:28px; text-align:center; position:sticky; top:96px;">
+        <img src="<%= tutor.avatar %>" alt="Portrait of <%= tutor.full_name %>" style="width:140px; height:140px; border-radius:50%; object-fit:cover; margin:0 auto 16px;">
+        <h2 style="margin-bottom:2px;"><%= tutor.full_name %></h2>
+        <p style="color:var(--ink-faint); margin-bottom:14px;"><%= tutor.qualification %></p>
+        <div class="rating" style="justify-content:center;"><i class="fa-solid fa-star"></i> <%= tutor.average_rating.toFixed(1) %> <span class="muted">(<%= tutor.total_sessions %> sessions)</span></div>
+        <div class="tag-list" style="justify-content:center;">
+          <% subjects.forEach(function(s) { %><span class="tag"><%= s.name %></span><% }) %>
+        </div>
+        <div class="flex items-center gap-8" style="justify-content:center; margin-bottom:6px;">
+          <span class="badge <%= tutor.delivery_mode === 'online' ? 'badge-available' : tutor.delivery_mode === 'in-person' ? 'badge-pending' : 'badge-completed' %>">
+            <i class="fa-solid <%= tutor.delivery_mode === 'online' ? 'fa-wifi' : tutor.delivery_mode === 'in-person' ? 'fa-location-dot' : 'fa-globe' %>"></i>
+            <%= tutor.delivery_mode === 'online' ? 'Online' : tutor.delivery_mode === 'in-person' ? 'In-Person' : 'Online & In-Person' %>
+          </span>
+        </div>
+        <div class="price" style="font-size:1.4rem; margin:16px 0;"><%= tutor.hourly_rate %> USD <small>/ hour</small></div>
+        <% if (currentUser && currentUser.role === 'student') { %>
+          <a href="/student/book/<%= tutor.id %>" class="btn btn-primary btn-block" style="margin-bottom:10px;">Book a Session</a>
+          <a href="/student/messages/<%= tutor.user_id %>" class="btn btn-outline btn-block">Send Message</a>
+        <% } else if (currentUser) { %>
+          <p class="field-hint">Only students can book sessions.</p>
+        <% } else { %>
+          <a href="/login" class="btn btn-primary btn-block" style="margin-bottom:10px;">Log In to Book</a>
+          <a href="/login" class="btn btn-outline btn-block">Log In to Message</a>
+        <% } %>
+      </div>
+
+      <div>
+        <div class="panel">
+          <div class="panel-head"><h2>About</h2></div>
+          <p><%= tutor.bio || 'This tutor has not added a bio yet.' %></p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>Teaching Details</h2></div>
+          <div class="grid grid-2">
+            <div><strong>University/Department</strong><p><%= tutor.university %><%= tutor.department ? ', ' + tutor.department : '' %></p></div>
+            <div><strong>Teaching Experience</strong><p><%= tutor.experience_years %> years</p></div>
+            <div><strong>Teaching Method</strong><p><%= tutor.teaching_method || 'Not specified' %></p></div>
+            <div><strong>Completed Sessions</strong><p><%= tutor.total_sessions %></p></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>Availability</h2></div>
+          <% if (availability.length === 0) { %>
+            <p>No availability listed yet.</p>
+          <% } else { %>
+            <div class="tag-list">
+              <% availability.forEach(function(a) { %>
+                <span class="tag"><%= a.day_of_week %>: <%= a.start_time %>–<%= a.end_time %></span>
+              <% }) %>
+            </div>
+          <% } %>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h2>Reviews (<%= reviews.length %>)</h2></div>
+          <% if (reviews.length === 0) { %>
+            <div class="empty-state"><i class="fa-solid fa-star"></i><p>No reviews yet — be the first to book a session!</p></div>
+          <% } else { %>
+            <% reviews.forEach(function(r) { %>
+              <div style="padding:16px 0; border-bottom:1px solid var(--line);">
+                <div class="testimonial-person" style="margin-top:0; margin-bottom:8px;">
+                  <img src="<%= r.student_avatar || '/images/default-avatar.svg' %>" alt="">
+                  <div>
+                    <strong style="display:block; font-size:.9rem;"><%= r.student_name %></strong>
+                    <span style="font-size:.76rem; color:var(--ink-faint);"><%= new Date(r.created_at).toLocaleDateString() %></span>
+                  </div>
+                </div>
+                <div class="stars" style="margin-bottom:6px;">
+                  <% for (let i=0;i<5;i++) { %><i class="fa-solid fa-star" style="<%= i < r.rating ? 'color:var(--warning);' : 'color:var(--line);' %>"></i><% } %>
+                </div>
+                <p style="margin:0;"><%= r.comment %></p>
+              </div>
+            <% }) %>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
+<script src="/js/main.js"></script>
+</body>
+</html>

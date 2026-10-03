@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head', { pageTitle: 'Reviews' }) %></head>
+<body>
+<%- include('../partials/toasts') %>
+<%- include('../partials/navbar', {}) %>
+
+<div class="dash-shell">
+  <%- include('../partials/student-sidebar', { active: 'reviews' }) %>
+
+  <main class="dash-main">
+    <%- include('../partials/dash-toggle') %>
+    <div class="dash-header"><div><h1>Reviews</h1><p>Rate your completed sessions and view your past reviews.</p></div></div>
+
+    <% if (reviewable.length > 0) { %>
+    <div class="panel">
+      <div class="panel-head"><h2>Awaiting Your Review</h2></div>
+      <% reviewable.forEach(function(b) { %>
+        <div style="border:1px solid var(--line); border-radius:var(--radius-sm); padding:18px; margin-bottom:14px;">
+          <p style="margin-bottom:10px;"><strong><%= b.tutor_name %></strong> — <%= b.subject_name %> on <%= b.session_date %></p>
+          <form method="POST" action="/student/reviews/<%= b.id %>">
+            <div class="form-group">
+              <label>Rating</label>
+              <div class="star-input" data-for="rating-<%= b.id %>">
+                <i class="fa-solid fa-star" data-value="1"></i>
+                <i class="fa-solid fa-star" data-value="2"></i>
+                <i class="fa-solid fa-star" data-value="3"></i>
+                <i class="fa-solid fa-star" data-value="4"></i>
+                <i class="fa-solid fa-star" data-value="5"></i>
+              </div>
+              <input type="hidden" id="rating-<%= b.id %>" name="rating" value="5">
+            </div>
+            <div class="form-group">
+              <label for="comment-<%= b.id %>">Comment</label>
+              <textarea class="form-control" id="comment-<%= b.id %>" name="comment" placeholder="How was your session?"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm">Submit Review</button>
+          </form>
+        </div>
+      <% }) %>
+    </div>
+    <% } %>
+
+    <div class="panel">
+      <div class="panel-head"><h2>Your Reviews</h2></div>
+      <% if (reviews.length === 0) { %>
+        <div class="empty-state"><i class="fa-solid fa-star"></i><p>You haven't left any reviews yet.</p></div>
+      <% } else { %>
+        <% reviews.forEach(function(r) { %>
+          <div style="padding:14px 0; border-bottom:1px solid var(--line);">
+            <strong><%= r.tutor_name %></strong>
+            <div class="stars" style="margin:6px 0;">
+              <% for (let i=0;i<5;i++) { %><i class="fa-solid fa-star" style="<%= i < r.rating ? 'color:var(--warning);' : 'color:var(--line);' %>"></i><% } %>
+            </div>
+            <p style="margin:0;"><%= r.comment %></p>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </main>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

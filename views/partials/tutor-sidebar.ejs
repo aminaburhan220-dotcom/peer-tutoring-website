@@ -1,0 +1,31 @@
+<aside class="dash-sidebar" id="dashSidebar">
+  <div class="side-user">
+    <img src="<%= currentUser.avatar || '/images/default-avatar.svg' %>" alt="">
+    <div>
+      <strong><%= currentUser.full_name %></strong>
+      <span>Peer Tutor</span>
+    </div>
+  </div>
+  <% if (currentUser.hasStudentProfile) { %>
+    <a href="/student/dashboard" class="side-link" style="background:var(--secondary-light); color:#8A6314; margin-bottom:12px;"><i class="fa-solid fa-arrow-right-arrow-left"></i> Switch to Learner Dashboard</a>
+  <% } %>
+  <a href="/tutor/dashboard" class="side-link <%= active === 'dashboard' ? 'active' : '' %>"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+  <a href="/tutor/profile" class="side-link <%= active === 'profile' ? 'active' : '' %>"><i class="fa-solid fa-user"></i> My Profile</a>
+  <a href="/tutor/subjects" class="side-link <%= active === 'subjects' ? 'active' : '' %>"><i class="fa-solid fa-book"></i> My Subjects</a>
+  <a href="/tutor/availability" class="side-link <%= active === 'availability' ? 'active' : '' %>"><i class="fa-solid fa-calendar-days"></i> Availability</a>
+  <a href="/tutor/requests" class="side-link <%= active === 'requests' ? 'active' : '' %>"><i class="fa-solid fa-inbox"></i> Booking Requests</a>
+  <a href="/tutor/sessions" class="side-link <%= active === 'sessions' ? 'active' : '' %>"><i class="fa-solid fa-chalkboard-user"></i> My Sessions</a>
+  <a href="/tutor/messages" class="side-link <%= active === 'messages' ? 'active' : '' %>"><i class="fa-solid fa-comments"></i> Messages</a>
+  <a href="/tutor/reviews" class="side-link <%= active === 'reviews' ? 'active' : '' %>"><i class="fa-solid fa-star"></i> Reviews</a>
+  <a href="/tutor/earnings" class="side-link <%= active === 'earnings' ? 'active' : '' %>"><i class="fa-solid fa-sack-dollar"></i> Earnings</a>
+  <a href="/tutor/notifications" class="side-link <%= active === 'notifications' ? 'active' : '' %>"><i class="fa-solid fa-bell"></i> Notifications</a>
+  <a href="/tutor/settings" class="side-link <%= active === 'settings' ? 'active' : '' %>"><i class="fa-solid fa-gear"></i> Settings</a>
+  <% if (!currentUser.hasStudentProfile) { %>
+    <form action="/tutor/become-student" method="POST" style="margin-top:12px;">
+      <button type="submit" class="side-link" style="width:100%; background:var(--gradient); color:#fff; border:none; text-align:left; font:inherit; cursor:pointer;"><i class="fa-solid fa-user-graduate"></i> Also Register as a Learner</button>
+    </form>
+  <% } %>
+  <form action="/logout" method="POST">
+    <button type="submit" class="side-link logout-link" style="width:100%; background:none; border:none; text-align:left; font: inherit; cursor:pointer;"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+  </form>
+</aside>

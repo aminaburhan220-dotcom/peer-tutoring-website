@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head', { pageTitle: 'Earnings' }) %></head>
+<body>
+<%- include('../partials/toasts') %>
+<%- include('../partials/navbar', {}) %>
+
+<div class="dash-shell">
+  <%- include('../partials/tutor-sidebar', { active: 'earnings' }) %>
+
+  <main class="dash-main">
+    <%- include('../partials/dash-toggle') %>
+    <div class="dash-header"><div><h1>Earnings</h1><p>An estimate based on your completed sessions and hourly rate.</p></div></div>
+
+    <div class="card stat-card" style="max-width:340px; margin-bottom:24px;">
+      <div class="icon"><i class="fa-solid fa-sack-dollar"></i></div>
+      <div><div class="num">$<%= totalEarnings.toFixed(2) %></div><div class="label">Estimated Total Earnings</div></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h2>Completed Sessions</h2></div>
+      <% if (completedSessions.length === 0) { %>
+        <div class="empty-state"><i class="fa-solid fa-sack-dollar"></i><p>No completed sessions yet.</p></div>
+      <% } else { %>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Student</th><th>Subject</th><th>Date</th><th>Rate</th></tr></thead>
+            <tbody>
+              <% completedSessions.forEach(function(s) { %>
+                <tr><td><%= s.student_name %></td><td><%= s.subject_name %></td><td><%= s.session_date %></td><td>$<%= tutor.hourly_rate.toFixed(2) %></td></tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+    <p class="field-hint">Note: this is a simple estimate (completed sessions × your hourly rate). A full payments/payout system is outside the scope of this project.</p>
+  </main>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

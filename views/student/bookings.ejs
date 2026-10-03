@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head', { pageTitle: 'My Bookings' }) %></head>
+<body>
+<%- include('../partials/toasts') %>
+<%- include('../partials/navbar', {}) %>
+
+<div class="dash-shell">
+  <%- include('../partials/student-sidebar', { active: 'bookings' }) %>
+
+  <main class="dash-main">
+    <%- include('../partials/dash-toggle') %>
+    <div class="dash-header">
+      <div><h1>My Bookings</h1><p>Track the status of your tutoring session requests.</p></div>
+      <a href="/find-tutors" class="btn btn-primary">Book New Session</a>
+    </div>
+
+    <div class="panel">
+      <% if (bookings.length === 0) { %>
+        <div class="empty-state"><i class="fa-solid fa-calendar-check"></i><p>You haven't booked any sessions yet.</p></div>
+      <% } else { %>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Tutor</th><th>Subject</th><th>Date</th><th>Time</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <% bookings.forEach(function(b) { %>
+                <tr>
+                  <td><%= b.tutor_name %></td>
+                  <td><%= b.subject_name %></td>
+                  <td><%= b.session_date %></td>
+                  <td><%= b.start_time %>–<%= b.end_time %></td>
+                  <td><span class="badge badge-<%= b.status %>"><%= b.status %></span></td>
+                  <td>
+                    <% if (b.status === 'pending' || b.status === 'accepted') { %>
+                      <form method="POST" action="/student/bookings/<%= b.id %>/cancel" data-confirm="Cancel this booking?">
+                        <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+                      </form>
+                    <% } %>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+  </main>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

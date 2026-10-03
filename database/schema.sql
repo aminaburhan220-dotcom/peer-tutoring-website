@@ -1,0 +1,120 @@
+-- PeerTutor Database Schema (SQLite)
+
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  full_name TEXT NOT NULL,
+  email TEXT NOT NULL UNIQUE,
+  password TEXT NOT NULL,
+  role TEXT NOT NULL CHECK(role IN ('student','tutor','admin')),
+  gender TEXT CHECK(gender IN ('male','female')),
+  phone TEXT,
+  avatar TEXT DEFAULT '/images/avatar-male.svg',
+  is_active INTEGER DEFAULT 1,
+  created_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS students (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+  university TEXT,
+  department TEXT,
+  bio TEXT
+);
+
+CREATE TABLE IF NOT EXISTS tutors (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+  qualification TEXT,
+  university TEXT,
+  department TEXT,
+  bio TEXT,
+  teaching_method TEXT,
+  experience_years INTEGER DEFAULT 0,
+  hourly_rate REAL DEFAULT 10,
+  status TEXT DEFAULT 'pending' CHECK(status IN ('pending','approved','rejected')),
+  average_rating REAL DEFAULT 0,
+  total_sessions INTEGER DEFAULT 0,
+  delivery_mode TEXT DEFAULT 'online' CHECK(delivery_mode IN ('online','in-person','both'))
+);
+
+CREATE TABLE IF NOT EXISTS subjects (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL UNIQUE,
+  icon TEXT,
+  description TEXT,
+  image_url TEXT
+);
+
+CREATE TABLE IF NOT EXISTS tutor_subjects (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  tutor_id INTEGER NOT NULL REFERENCES tutors(id) ON DELETE CASCADE,
+  subject_id INTEGER NOT NULL REFERENCES subjects(id) ON DELETE CASCADE,
+  UNIQUE(tutor_id, subject_id)
+);
+
+CREATE TABLE IF NOT EXISTS availability (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  tutor_id INTEGER NOT NULL REFERENCES tutors(id) ON DELETE CASCADE,
+  day_of_week TEXT NOT NULL,
+  start_time TEXT NOT NULL,
+  end_time TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS bookings (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  student_id INTEGER NOT NULL REFERENCES students(id) ON DELETE CASCADE,
+  tutor_id INTEGER NOT NULL REFERENCES tutors(id) ON DELETE CASCADE,
+  subject_id INTEGER NOT NULL REFERENCES subjects(id),
+  session_date TEXT NOT NULL,
+  start_time TEXT NOT NULL,
+  end_time TEXT NOT NULL,
+  session_type TEXT DEFAULT 'online',
+  message TEXT,
+  status TEXT DEFAULT 'pending' CHECK(status IN ('pending','accepted','rejected','completed','cancelled')),
+  created_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS messages (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  sender_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  receiver_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  content TEXT NOT NULL,
+  is_read INTEGER DEFAULT 0,
+  created_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS notifications (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  type TEXT NOT NULL,
+  content TEXT NOT NULL,
+  link TEXT,
+  is_read INTEGER DEFAULT 0,
+  created_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS reviews (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  booking_id INTEGER NOT NULL REFERENCES bookings(id) ON DELETE CASCADE,
+  student_id INTEGER NOT NULL REFERENCES students(id) ON DELETE CASCADE,
+  tutor_id INTEGER NOT NULL REFERENCES tutors(id) ON DELETE CASCADE,
+  rating INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5),
+  comment TEXT,
+  created_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS favorites (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  student_id INTEGER NOT NULL REFERENCES students(id) ON DELETE CASCADE,
+  tutor_id INTEGER NOT NULL REFERENCES tutors(id) ON DELETE CASCADE,
+  UNIQUE(student_id, tutor_id)
+);
+
+CREATE TABLE IF NOT EXISTS activity_logs (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  type TEXT NOT NULL,
+  description TEXT NOT NULL,
+  created_at TEXT DEFAULT (datetime('now'))
+);

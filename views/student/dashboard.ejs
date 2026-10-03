@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head', { pageTitle: 'Student Dashboard' }) %></head>
+<body>
+<%- include('../partials/toasts') %>
+<%- include('../partials/navbar', {}) %>
+
+<div class="dash-shell">
+  <%- include('../partials/student-sidebar', { active: 'dashboard' }) %>
+
+  <main class="dash-main">
+    <%- include('../partials/dash-toggle') %>
+    <div class="dash-header">
+      <div>
+        <h1>Welcome back, <%= currentUser.full_name.split(' ')[0] %> 👋</h1>
+        <p>Here's what's happening with your tutoring sessions.</p>
+      </div>
+      <a href="/find-tutors" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> Find a Tutor</a>
+    </div>
+
+    <div class="grid grid-4" style="margin-bottom:28px;">
+      <div class="card stat-card"><div class="icon"><i class="fa-solid fa-calendar-check"></i></div><div><div class="num"><%= upcoming.length %></div><div class="label">Upcoming Sessions</div></div></div>
+      <div class="card stat-card"><div class="icon"><i class="fa-solid fa-circle-check"></i></div><div><div class="num"><%= completedCount %></div><div class="label">Completed Sessions</div></div></div>
+      <div class="card stat-card"><div class="icon"><i class="fa-solid fa-hourglass-half"></i></div><div><div class="num"><%= pendingCount %></div><div class="label">Pending Bookings</div></div></div>
+      <div class="card stat-card"><div class="icon"><i class="fa-solid fa-heart"></i></div><div><div class="num"><%= favorites.length %></div><div class="label">Favorite Tutors</div></div></div>
+    </div>
+
+    <div class="dash-3col">
+      <div class="panel">
+        <div class="panel-head"><h2>Upcoming Sessions</h2><a href="/student/bookings" class="btn btn-ghost btn-sm">View all</a></div>
+        <% if (upcoming.length === 0) { %>
+          <div class="empty-state"><i class="fa-solid fa-calendar"></i><p>No upcoming sessions yet.</p></div>
+        <% } else { %>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Tutor</th><th>Subject</th><th>Date</th><th>Time</th></tr></thead>
+              <tbody>
+                <% upcoming.forEach(function(b) { %>
+                  <tr><td><%= b.tutor_name %></td><td><%= b.subject_name %></td><td><%= b.session_date %></td><td><%= b.start_time %>–<%= b.end_time %></td></tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h2>Recent Messages</h2><a href="/student/messages" class="btn btn-ghost btn-sm">View all</a></div>
+        <% if (recentMessages.length === 0) { %>
+          <div class="empty-state"><i class="fa-solid fa-comments"></i><p>No messages yet.</p></div>
+        <% } else { %>
+          <% recentMessages.forEach(function(m) { %>
+            <div style="padding:12px 0; border-bottom:1px solid var(--line);">
+              <strong style="font-size:.88rem;"><%= m.sender_name %></strong>
+              <p style="margin:2px 0 0; font-size:.85rem;"><%= m.content %></p>
+            </div>
+          <% }) %>
+        <% } %>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h2 style="font-size:1rem;">Calendar</h2></div>
+        <div class="mini-calendar"
+             data-sessions='<%- JSON.stringify(upcoming.map(function(b){ return b.session_date; })) %>'></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h2>Favorite Tutors</h2><a href="/student/favorites" class="btn btn-ghost btn-sm">View all</a></div>
+      <% if (favorites.length === 0) { %>
+        <div class="empty-state"><i class="fa-solid fa-heart"></i><p>You haven't favorited any tutors yet.</p></div>
+      <% } else { %>
+        <div class="grid grid-4">
+          <% favorites.forEach(function(t) { %>
+            <div class="card" style="padding:16px; text-align:center;">
+              <img src="<%= t.avatar || '/images/default-avatar.svg' %>" alt="" style="width:60px; height:60px; border-radius:50%; object-fit:cover; margin:0 auto 10px;">
+              <strong style="font-size:.9rem; display:block;"><%= t.full_name %></strong>
+              <a href="/tutors/<%= t.id %>" class="btn btn-ghost btn-sm">View Profile</a>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+  </main>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

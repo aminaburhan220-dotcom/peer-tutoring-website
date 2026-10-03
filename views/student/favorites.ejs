@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head', { pageTitle: 'Favorites' }) %></head>
+<body>
+<%- include('../partials/toasts') %>
+<%- include('../partials/navbar', {}) %>
+
+<div class="dash-shell">
+  <%- include('../partials/student-sidebar', { active: 'favorites' }) %>
+
+  <main class="dash-main">
+    <%- include('../partials/dash-toggle') %>
+    <div class="dash-header"><div><h1>Favorite Tutors</h1><p>Tutors you've saved for quick access.</p></div></div>
+
+    <% if (favorites.length === 0) { %>
+      <div class="panel"><div class="empty-state"><i class="fa-solid fa-heart"></i><p>You haven't favorited any tutors yet.</p><a href="/find-tutors" class="btn btn-outline">Browse Tutors</a></div></div>
+    <% } else { %>
+      <div class="grid grid-4">
+        <% favorites.forEach(function(t) { %>
+          <div class="card tutor-card">
+            <img class="tutor-photo" src="<%= t.avatar %>" alt="">
+            <div class="tutor-body">
+              <h3><%= t.full_name %></h3>
+              <div class="rating"><i class="fa-solid fa-star"></i> <%= t.average_rating.toFixed(1) %></div>
+              <div class="price"><%= t.hourly_rate %> USD<small>/hr</small></div>
+            </div>
+            <div class="card-actions">
+              <a href="/tutors/<%= t.id %>" class="btn btn-outline btn-sm w-full">View</a>
+              <form method="POST" action="/student/favorites/<%= t.id %>/toggle" class="w-full">
+                <button type="submit" class="btn btn-danger btn-sm w-full">Remove</button>
+              </form>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </main>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

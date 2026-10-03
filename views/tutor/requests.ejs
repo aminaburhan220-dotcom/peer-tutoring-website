@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head', { pageTitle: 'Booking Requests' }) %></head>
+<body>
+<%- include('../partials/toasts') %>
+<%- include('../partials/navbar', {}) %>
+
+<div class="dash-shell">
+  <%- include('../partials/tutor-sidebar', { active: 'requests' }) %>
+
+  <main class="dash-main">
+    <%- include('../partials/dash-toggle') %>
+    <div class="dash-header"><div><h1>Booking Requests</h1><p>Review and respond to new session requests.</p></div></div>
+
+    <div class="panel">
+      <% if (requests.length === 0) { %>
+        <div class="empty-state"><i class="fa-solid fa-inbox"></i><p>No pending booking requests.</p></div>
+      <% } else { %>
+        <% requests.forEach(function(r) { %>
+          <div style="border:1px solid var(--line); border-radius:var(--radius-sm); padding:18px; margin-bottom:14px;">
+            <div class="flex justify-between items-center" style="margin-bottom:8px;">
+              <div class="table-avatar">
+                <img src="<%= r.student_avatar %>" alt="">
+                <strong><%= r.student_name %></strong>
+              </div>
+              <span class="badge badge-pending">Pending</span>
+            </div>
+            <p style="margin:0 0 6px; font-size:.9rem;"><%= r.subject_name %> · <%= r.session_date %> · <%= r.start_time %>–<%= r.end_time %> · <%= r.session_type %></p>
+            <% if (r.message) { %><p style="font-style:italic; color:var(--ink-faint); font-size:.88rem;">"<%= r.message %>"</p><% } %>
+            <div class="flex gap-8" style="margin-top:12px;">
+              <form method="POST" action="/tutor/requests/<%= r.id %>/accept"><button type="submit" class="btn btn-primary btn-sm">Accept</button></form>
+              <form method="POST" action="/tutor/requests/<%= r.id %>/reject" data-confirm="Reject this booking request?"><button type="submit" class="btn btn-danger btn-sm">Reject</button></form>
+            </div>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </main>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

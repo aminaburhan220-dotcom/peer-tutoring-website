@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head', { pageTitle: 'My Profile' }) %></head>
+<body>
+<%- include('../partials/toasts') %>
+<%- include('../partials/navbar', {}) %>
+
+<div class="dash-shell">
+  <%- include('../partials/student-sidebar', { active: 'profile' }) %>
+
+  <main class="dash-main">
+    <%- include('../partials/dash-toggle') %>
+    <div class="dash-header"><div><h1>My Profile</h1><p>Update your personal information.</p></div></div>
+
+    <div class="panel" style="max-width:640px;">
+      <form method="POST" action="/student/profile" enctype="multipart/form-data" data-validate>
+        <div class="form-group">
+          <label>Profile Picture</label>
+          <div class="avatar-upload-row">
+            <img id="avatarPreview" src="<%= user.avatar || '/images/avatar-male.svg' %>" alt="">
+            <label class="file-input-label">
+              <i class="fa-solid fa-camera"></i> Change Photo
+              <input type="file" name="avatar" accept="image/png, image/jpeg, image/webp" data-preview="avatarPreview">
+            </label>
+          </div>
+          <div class="field-hint">JPG, PNG or WEBP, up to 2MB. If you don't upload a photo, your avatar matches the gender you selected at sign-up.</div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="full_name">Full Name</label>
+            <input class="form-control" type="text" id="full_name" name="full_name" value="<%= user.full_name %>" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone</label>
+            <input class="form-control" type="text" id="phone" name="phone" value="<%= user.phone || '' %>">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input class="form-control" type="email" value="<%= user.email %>" disabled>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="university">University</label>
+            <input class="form-control" type="text" id="university" name="university" value="<%= student.university || '' %>">
+          </div>
+          <div class="form-group">
+            <label for="department">Department</label>
+            <input class="form-control" type="text" id="department" name="department" value="<%= student.department || '' %>">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="bio">Bio</label>
+          <textarea class="form-control" id="bio" name="bio"><%= student.bio || '' %></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+      </form>
+    </div>
+  </main>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

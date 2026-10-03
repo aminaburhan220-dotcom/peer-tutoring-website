@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('../partials/head', { pageTitle: 'Manage Subjects' }) %></head>
+<body>
+<%- include('../partials/toasts') %>
+<%- include('../partials/navbar', {}) %>
+
+<div class="dash-shell">
+  <%- include('../partials/admin-sidebar', { active: 'subjects' }) %>
+
+  <main class="dash-main">
+    <%- include('../partials/dash-toggle') %>
+    <div class="dash-header"><div><h1>Manage Subjects</h1><p><%= subjects.length %> subjects available.</p></div></div>
+
+    <div class="panel" style="max-width:520px;">
+      <div class="panel-head"><h2>Add Subject</h2></div>
+      <form method="POST" action="/admin/subjects" data-validate>
+        <div class="form-group"><label for="name">Name</label><input class="form-control" type="text" id="name" name="name" required></div>
+        <div class="form-group"><label for="icon">Icon (Font Awesome class, e.g. fa-book)</label><input class="form-control" type="text" id="icon" name="icon" placeholder="fa-book"></div>
+        <div class="form-group"><label for="description">Description</label><textarea class="form-control" id="description" name="description"></textarea></div>
+        <button type="submit" class="btn btn-primary">Add Subject</button>
+      </form>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h2>All Subjects</h2></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Icon</th><th>Name</th><th>Description</th><th>Tutors</th><th>Actions</th></tr></thead>
+          <tbody>
+            <% subjects.forEach(function(s) { %>
+              <tr>
+                <td><i class="fa-solid <%= s.icon || 'fa-book' %>" style="color:var(--primary); font-size:1.2rem;"></i></td>
+                <td><%= s.name %></td>
+                <td style="max-width:260px;"><%= s.description %></td>
+                <td><%= s.tutorCount %></td>
+                <td>
+                  <form method="POST" action="/admin/subjects/<%= s.id %>/delete" data-confirm="Delete subject '<%= s.name %>'?" style="display:inline;">
+                    <button type="submit" class="btn btn-ghost btn-sm" style="color:var(--danger);">Delete</button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>
