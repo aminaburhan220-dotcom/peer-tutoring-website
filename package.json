@@ -5,16 +5,19 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "seed": "node database/seed.js"
+    "seed": "node database/seed.js",
+    "migrate:postgres": "node database/migrate-sqlite-to-postgres.js"
   },
   "dependencies": {
-    "express": "^4.19.2",
-    "ejs": "^3.1.10",
-    "express-session": "^1.18.0",
-    "better-sqlite3": "^11.3.0",
     "bcryptjs": "^2.4.3",
-    "multer": "^1.4.5-lts.1",
+    "better-sqlite3": "^11.3.0",
     "connect-flash": "^0.1.1",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "express-async-errors": "^3.1.1",
+    "express-session": "^1.18.0",
+    "multer": "^1.4.5-lts.1",
+    "pg": "^8.23.1"
   }
 }

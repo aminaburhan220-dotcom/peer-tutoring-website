@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+require('dotenv').config();
 const db = require('./db');
 
 function hash(pw) {
@@ -11,10 +12,12 @@ function hash(pw) {
 // before running this script — checking "any user exists" would then skip
 // seeding forever and leave Find Tutors permanently empty. Checking for the
 // known demo account instead means `npm run seed` is safe to re-run anytime.
-const alreadySeeded = db.prepare('SELECT id FROM users WHERE email = ?').get('admin@peertutor.com');
+async function seed() {
+await db.initialize();
+const alreadySeeded = await db.prepare('SELECT id FROM users WHERE email = ?').get('admin@peertutor.com');
 if (alreadySeeded) {
   console.log('Demo data already seeded. Skipping. (Delete database/peertutor.sqlite to fully reset and reseed.)');
-  process.exit(0);
+  return;
 }
 
 const insertUser = db.prepare(`INSERT INTO users (full_name, email, password, role, gender, phone, avatar) VALUES (?,?,?,?,?,?,?)`);
@@ -30,7 +33,7 @@ const insertMessage = db.prepare(`INSERT INTO messages (sender_id, receiver_id, 
 const insertNotification = db.prepare(`INSERT INTO notifications (user_id, type, content, link, is_read) VALUES (?,?,?,?,?)`);
 const insertFavorite = db.prepare(`INSERT INTO favorites (student_id, tutor_id) VALUES (?,?)`);
 
-const tx = db.transaction(() => {
+await db.transaction(async () => {
   // --- Subjects ---
   // database/db.js already guarantees these six exist on every server start
   // (subjects are reference data, not demo data). Using INSERT OR IGNORE here
@@ -50,12 +53,12 @@ const tx = db.transaction(() => {
   ];
   const subjectIds = {};
   for (const [name, icon, description, image_url] of subjects) {
-    insertSubject.run(name, icon, description, image_url);
-    subjectIds[name] = getSubjectByName.get(name).id;
+    await insertSubject.run(name, icon, description, image_url);
+    subjectIds[name] = (await getSubjectByName.get(name)).id;
   }
 
   // --- Admin ---
-  insertUser.run('Amina Mohamed', 'admin@peertutor.com', hash('Admin123!'), 'admin', 'female', '555-0100', 'https://images.unsplash.com/photo-1755434613831-1a8cb00bfb2c?auto=format&fit=crop&w=400&q=80');
+  await insertUser.run('Amina Mohamed', 'admin@peertutor.com', hash('Admin123!'), 'admin', 'female', '555-0100', 'https://images.unsplash.com/photo-1755434613831-1a8cb00bfb2c?auto=format&fit=crop&w=400&q=80');
 
   // --- Students ---
   const studentsData = [
@@ -65,8 +68,8 @@ const tx = db.transaction(() => {
   ];
   const studentIds = [];
   for (const [name, email, gender, uni, dept, bio, photo] of studentsData) {
-    const u = insertUser.run(name, email, hash('Student123!'), 'student', gender, '555-0101', photo);
-    const s = insertStudent.run(u.lastInsertRowid, uni, dept, bio);
+    const u = await insertUser.run(name, email, hash('Student123!'), 'student', gender, '555-0101', photo);
+    const s = await insertStudent.run(u.lastInsertRowid, uni, dept, bio);
     studentIds.push({ userId: u.lastInsertRowid, studentId: s.lastInsertRowid, name });
   }
 
@@ -116,45 +119,52 @@ const tx = db.transaction(() => {
 
   const tutorIds = [];
   for (const t of tutorsData) {
-    const u = insertUser.run(t.name, t.email, hash('Tutor123!'), 'tutor', t.gender, '555-0102', t.photo);
-    const tu = insertTutor.run(u.lastInsertRowid, t.qualification, t.university, t.department, t.bio, t.method, t.experience, t.rate, t.status, t.rating, t.sessions, t.delivery);
+    const u = await insertUser.run(t.name, t.email, hash('Tutor123!'), 'tutor', t.gender, '555-0102', t.photo);
+    const tu = await insertTutor.run(u.lastInsertRowid, t.qualification, t.university, t.department, t.bio, t.method, t.experience, t.rate, t.status, t.rating, t.sessions, t.delivery);
     const tutorId = tu.lastInsertRowid;
     for (const sub of t.subjects) {
-      insertTutorSubject.run(tutorId, subjectIds[sub]);
+      await insertTutorSubject.run(tutorId, subjectIds[sub]);
     }
     // availability
-    insertAvailability.run(tutorId, 'Monday', '14:00', '18:00');
-    insertAvailability.run(tutorId, 'Wednesday', '10:00', '13:00');
-    insertAvailability.run(tutorId, 'Friday', '15:00', '19:00');
+    await insertAvailability.run(tutorId, 'Monday', '14:00', '18:00');
+    await insertAvailability.run(tutorId, 'Wednesday', '10:00', '13:00');
+    await insertAvailability.run(tutorId, 'Friday', '15:00', '19:00');
     tutorIds.push({ userId: u.lastInsertRowid, tutorId, name: t.name, subjects: t.subjects });
   }
 
   // --- Bookings ---
-  const b1 = insertBooking.run(studentIds[0].studentId, tutorIds[0].tutorId, subjectIds['Web Development'], '2026-08-20', '15:00', '16:00', 'online', 'Need help understanding CSS flexbox.', 'accepted');
-  const b2 = insertBooking.run(studentIds[1].studentId, tutorIds[2].tutorId, subjectIds['Spanish'], '2026-08-10', '10:00', '11:00', 'online', 'Practice conversational Spanish.', 'completed');
-  const b3 = insertBooking.run(studentIds[2].studentId, tutorIds[3].tutorId, subjectIds['Graphic Design'], '2026-08-22', '16:00', '17:00', 'online', 'Portfolio review please.', 'pending');
-  insertBooking.run(studentIds[0].studentId, tutorIds[1].tutorId, subjectIds['English'], '2026-07-15', '09:00', '10:00', 'online', 'Essay feedback.', 'completed');
+  const b1 = await insertBooking.run(studentIds[0].studentId, tutorIds[0].tutorId, subjectIds['Web Development'], '2026-08-20', '15:00', '16:00', 'online', 'Need help understanding CSS flexbox.', 'accepted');
+  const b2 = await insertBooking.run(studentIds[1].studentId, tutorIds[2].tutorId, subjectIds['Spanish'], '2026-08-10', '10:00', '11:00', 'online', 'Practice conversational Spanish.', 'completed');
+  await insertBooking.run(studentIds[2].studentId, tutorIds[3].tutorId, subjectIds['Graphic Design'], '2026-08-22', '16:00', '17:00', 'online', 'Portfolio review please.', 'pending');
+  await insertBooking.run(studentIds[0].studentId, tutorIds[1].tutorId, subjectIds['English'], '2026-07-15', '09:00', '10:00', 'online', 'Essay feedback.', 'completed');
 
   // --- Reviews (for completed bookings) ---
-  insertReview.run(b2.lastInsertRowid, studentIds[1].studentId, tutorIds[2].tutorId, 5, 'Carlos was patient and made me feel comfortable speaking Spanish!');
-  insertReview.run(b1.lastInsertRowid, studentIds[0].studentId, tutorIds[0].tutorId, 5, 'David explained flexbox so clearly. Highly recommend.');
+  await insertReview.run(b2.lastInsertRowid, studentIds[1].studentId, tutorIds[2].tutorId, 5, 'Carlos was patient and made me feel comfortable speaking Spanish!');
+  await insertReview.run(b1.lastInsertRowid, studentIds[0].studentId, tutorIds[0].tutorId, 5, 'David explained flexbox so clearly. Highly recommend.');
 
   // --- Favorites ---
-  insertFavorite.run(studentIds[0].studentId, tutorIds[0].tutorId);
-  insertFavorite.run(studentIds[0].studentId, tutorIds[1].tutorId);
+  await insertFavorite.run(studentIds[0].studentId, tutorIds[0].tutorId);
+  await insertFavorite.run(studentIds[0].studentId, tutorIds[1].tutorId);
 
   // --- Messages ---
-  insertMessage.run(studentIds[0].userId, tutorIds[0].userId, 'Hi David, looking forward to our session on Monday!', 1);
-  insertMessage.run(tutorIds[0].userId, studentIds[0].userId, 'Sounds great, see you then!', 0);
+  await insertMessage.run(studentIds[0].userId, tutorIds[0].userId, 'Hi David, looking forward to our session on Monday!', 1);
+  await insertMessage.run(tutorIds[0].userId, studentIds[0].userId, 'Sounds great, see you then!', 0);
 
   // --- Notifications ---
-  insertNotification.run(tutorIds[0].userId, 'booking', 'New booking request from Sara Ahmed for Web Development.', '/tutor/requests', 0);
-  insertNotification.run(studentIds[0].userId, 'booking_accepted', 'David Kim accepted your booking request.', '/student/bookings', 0);
+  await insertNotification.run(tutorIds[0].userId, 'booking', 'New booking request from Sara Ahmed for Web Development.', '/tutor/requests', 0);
+  await insertNotification.run(studentIds[0].userId, 'booking_accepted', 'David Kim accepted your booking request.', '/student/bookings', 0);
 });
 
-tx();
 console.log('Database seeded successfully.');
 console.log('---------------------------------');
 console.log('Admin login:  admin@peertutor.com / Admin123!');
 console.log('Student login: sara@student.com / Student123!');
 console.log('Tutor login:   david@tutor.com / Tutor123!');
+}
+
+seed()
+  .catch(error => {
+    console.error('Database seed failed:', error);
+    process.exitCode = 1;
+  })
+  .finally(() => db.close());

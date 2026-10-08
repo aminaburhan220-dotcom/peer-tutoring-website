@@ -1,4 +1,5 @@
 const path = require('path');
+require('express-async-errors');
 const express = require('express');
 const session = require('express-session');
 const flash = require('connect-flash');
@@ -56,6 +57,13 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something went wrong. Please try again.');
 });
 
-app.listen(PORT, () => {
-  console.log(`PeerTutor server running at http://localhost:${PORT}`);
-});
+db.initialize()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`PeerTutor server running at http://localhost:${PORT}`);
+    });
+  })
+  .catch(error => {
+    console.error('Failed to initialize database:', error);
+    process.exitCode = 1;
+  });

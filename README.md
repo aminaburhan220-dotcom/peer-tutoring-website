@@ -2,7 +2,7 @@
 
 **Learn Together. Grow Together.**
 
-A full-stack peer tutoring platform built with **Node.js, Express, EJS, vanilla JavaScript, and SQLite** (no frontend frameworks, no CSS frameworks).
+A full-stack peer tutoring platform built with **Node.js, Express, EJS, vanilla JavaScript, and PostgreSQL or SQLite** (no frontend frameworks, no CSS frameworks).
 
 Students can browse tutors by subject, book sessions, message tutors, and leave reviews. Tutors manage their profile, availability, and bookings. Admins approve tutors, manage the platform, and view reports.
 
@@ -13,7 +13,7 @@ Students can browse tutors by subject, book sessions, message tutors, and leave 
 - [Node.js](https://nodejs.org) v18 or newer (v22 recommended)
 - npm (comes with Node.js)
 
-No external database server is needed — PeerTutor uses a local SQLite file that's created automatically.
+Local development uses a SQLite file created automatically. Set `DATABASE_URL` to use PostgreSQL instead.
 
 ---
 
@@ -43,6 +43,20 @@ This creates `database/peertutor.sqlite` with demo data. Running it again is saf
 
 To start completely fresh, delete `database/peertutor.sqlite` and run `npm run seed` again.
 
+For PostgreSQL, set `DATABASE_URL` in the environment (Render provides an internal connection URL for services in the same region). The schema is applied automatically at startup. `npm run seed` seeds whichever database `DATABASE_URL` points to.
+
+### Migrate SQLite data to PostgreSQL
+
+Back up the SQLite source first, then set `DATABASE_URL` to the target PostgreSQL connection URL and run:
+
+```bash
+npm run migrate:postgres
+```
+
+The migration copies all application tables in one transaction, preserves IDs and foreign-key relationships, resets generated ID sequences, and verifies table row counts. It refuses to overwrite existing user or relationship data; any error rolls the import back. If the target has only the automatically-created subject catalog, the migration replaces it with the source catalog.
+
+On Render, add the database's internal URL to the web service as `DATABASE_URL`. Use a persistent paid PostgreSQL plan for production: Render's free PostgreSQL databases expire after 30 days and are deleted unless upgraded. The currently-created temporary database, `peertutor-postgres-temp`, expires on **November 7, 2026**.
+
 ---
 
 ## 4. Start the server
@@ -56,6 +70,20 @@ You should see:
 ```
 PeerTutor server running at http://localhost:3000
 ```
+
+## Deploying on Render with the existing database
+
+Render's local filesystem is not persistent across deploys unless the service has a persistent disk. To keep user data, create or attach a persistent disk to the web service (for example, mounted at `/var/data`) and set this environment variable on that service:
+
+```text
+DATABASE_PATH=/var/data/peertutor.sqlite
+```
+
+To migrate this installation, copy the complete active database file at `database/peertutor.sqlite` to `/var/data/peertutor.sqlite` on the Render service. This preserves accounts and their related profiles, bookings, messages, reviews, and other records. Do not use one of the `.backup` files unless you have verified it is the intended source.
+
+Stop the Render service before replacing the file, transfer it through a secure channel to the mounted disk, then restart the service. Do not use the application while the file is being copied. Keep a separate backup of the source until you have confirmed that users can sign in and the related data is present. Never commit SQLite databases or backups to the repository; they contain private user data.
+
+If `DATABASE_PATH` is unset, the app continues to use `database/peertutor.sqlite` relative to this project, as it does for local development.
 
 ## 5. Open the website
 
