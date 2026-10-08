@@ -25,7 +25,7 @@ From the `PeerTutor` folder, run:
 npm install
 ```
 
-This installs: `express`, `ejs`, `express-session`, `better-sqlite3`, `bcryptjs`, `connect-flash`, `dotenv`.
+This installs: `express`, `express-async-errors`, `ejs`, `express-session`, `better-sqlite3`, `pg`, `bcryptjs`, `connect-flash`, `dotenv`.
 
 > `better-sqlite3` compiles a small native module during install. If install fails on your machine, make sure you have build tools available (on Windows: `npm install --global windows-build-tools` in an elevated prompt; on macOS: Xcode Command Line Tools `xcode-select --install`; on Linux: `build-essential` and `python3`).
 
@@ -71,20 +71,6 @@ You should see:
 PeerTutor server running at http://localhost:3000
 ```
 
-## Deploying on Render with the existing database
-
-Render's local filesystem is not persistent across deploys unless the service has a persistent disk. To keep user data, create or attach a persistent disk to the web service (for example, mounted at `/var/data`) and set this environment variable on that service:
-
-```text
-DATABASE_PATH=/var/data/peertutor.sqlite
-```
-
-To migrate this installation, copy the complete active database file at `database/peertutor.sqlite` to `/var/data/peertutor.sqlite` on the Render service. This preserves accounts and their related profiles, bookings, messages, reviews, and other records. Do not use one of the `.backup` files unless you have verified it is the intended source.
-
-Stop the Render service before replacing the file, transfer it through a secure channel to the mounted disk, then restart the service. Do not use the application while the file is being copied. Keep a separate backup of the source until you have confirmed that users can sign in and the related data is present. Never commit SQLite databases or backups to the repository; they contain private user data.
-
-If `DATABASE_PATH` is unset, the app continues to use `database/peertutor.sqlite` relative to this project, as it does for local development.
-
 ## 5. Open the website
 
 Visit **http://localhost:3000** in your browser.
@@ -110,8 +96,10 @@ PeerTutor/
 ├── app.js                  # Express app entry point
 ├── package.json
 ├── database/
-│   ├── db.js                # SQLite connection (better-sqlite3)
+│   ├── db.js                # SQLite/PostgreSQL database connection
 │   ├── schema.sql            # Table definitions
+│   ├── schema.postgres.sql   # PostgreSQL table definitions
+│   ├── migrate-sqlite-to-postgres.js # Safe one-time SQLite data migration
 │   └── seed.js                # Sample data
 ├── middleware/
 │   ├── auth.js               # Session/auth helpers
